@@ -1,0 +1,46 @@
+<androidx.appcompat.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/emeraldGreen"
+    android:elevation="5dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    >
+
+    <!-- Menu Icon -->
+<!--    <ImageView-->
+<!--        android:id="@+id/menu_icon"-->
+<!--        android:layout_width="@dimen/dim_40"-->
+<!--        android:layout_height="@dimen/dim_40"-->
+<!--        android:src="@drawable/baseline_dehaze_24"-->
+<!--        android:layout_gravity="start"-->
+
+<!--        />-->
+
+    <!-- Text -->
+    <TextView
+        android:id="@+id/toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="sans-serif"
+        android:text="DUKANDAR"
+        android:textColor="@color/smokeyWhite"
+        android:textSize="@dimen/dim_40"
+        android:textStyle="bold" />
+
+    <!-- Cart Icon -->
+    <ImageView
+        android:id="@+id/cart_icon"
+        android:layout_width="@dimen/dim_30"
+        android:layout_height="@dimen/dim_30"
+        android:paddingEnd="@dimen/dim_10"
+        android:src="@drawable/cart"
+        android:layout_gravity="end"
+
+        />
+
+</androidx.appcompat.widget.Toolbar>
