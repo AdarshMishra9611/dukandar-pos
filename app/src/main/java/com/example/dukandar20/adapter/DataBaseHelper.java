@@ -1,9 +1,11 @@
 package com.example.dukandar20.adapter;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -110,5 +112,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         // Recreate tables
         onCreate(db);
+    }
+
+
+    public void addCategory(String categoryName, byte[] cat_image){
+        SQLiteDatabase db = this.getReadableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(CAT_NAME,categoryName);
+        cv.put(CAT_IMG, cat_image);
+        long result = db.insert(CAT_TABLE_NAME,null,cv);
+        if (result == -1){
+            Toast.makeText(context,"Failed",Toast.LENGTH_SHORT).show();
+
+        }else {
+            Toast.makeText(context,"Category Added successfully",Toast.LENGTH_SHORT).show();
+        }
     }
 }

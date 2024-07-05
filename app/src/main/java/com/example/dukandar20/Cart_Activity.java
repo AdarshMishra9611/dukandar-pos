@@ -36,6 +36,7 @@ public class Cart_Activity extends AppCompatActivity {
 
         //toolbar
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //*************-----   toggel --------*********//
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.OpenDrawer,R.string.ClodeDrawer);

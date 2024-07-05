@@ -44,6 +44,7 @@ public class Item_Activity extends AppCompatActivity {
         cart_icon = findViewById(R.id.cart_icon);
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //*************-----   toggel --------*********//
 

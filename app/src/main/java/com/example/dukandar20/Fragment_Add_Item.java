@@ -61,6 +61,8 @@ public class Fragment_Add_Item extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment__add__item, container, false);
 
+
+
         return view;
     }
 }
