@@ -1,5 +1,8 @@
 package com.example.dukandar20;
 
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.dukandar20.adapter.DataBaseHelper;
 import com.example.dukandar20.adapter.Item_RecyclerViewAdapter;
 import com.example.dukandar20.adapter.Item_model;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,18 +29,35 @@ import java.util.ArrayList;
  */
 public class Fragment_item extends Fragment {
 
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
 
+
+    ArrayList<Item_model> dataset;
+    DataBaseHelper myDB;
+    RecyclerView recyclerView;
+    String cat_id  ;
+
+
+
+
+
+
+
+
+
+
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    ArrayList<Item_model> dataset;
-    RecyclerView recyclerView;
+
 
     public Fragment_item() {
         // Required empty public constructor
@@ -65,12 +87,16 @@ public class Fragment_item extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
+        cat_id  = getArguments().getString("cat_id");
         // Inflate the layout for this fragment
         View view =    inflater.inflate(R.layout.fragment_item, container, false);
 
@@ -82,24 +108,31 @@ public class Fragment_item extends Fragment {
         ft_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((Item_Activity) getActivity()).replace_Fragment(new Fragment_Add_Item());
+
+
+                ((Item_Activity) getActivity()).replace_Fragment(new Fragment_Add_Item(),1);
+
 
             }
         });
 
 
         //dataset
-
+        myDB = new DataBaseHelper(getContext());
         dataset = new ArrayList<>();
-        dataset.add(new Item_model(R.drawable.a,"item1",10));
-        dataset.add(new Item_model(R.drawable.b,"item2",45));
-        dataset.add(new Item_model(R.drawable.c,"item3",69));
-        dataset.add(new Item_model(R.drawable.d,"item4", 45));
 
-        dataset.add(new Item_model(R.drawable.b,"item5",45));
-        dataset.add(new Item_model(R.drawable.c,"item6",69));
-        dataset.add(new Item_model(R.drawable.d,"item7", 45));
-        dataset.add(new Item_model(R.drawable.e,"Item8",78));
+        getItemData();
+
+//        dataset = new ArrayList<>();
+//        dataset.add(new Item_model(R.drawable.a,"item1",10));
+//        dataset.add(new Item_model(R.drawable.b,"item2",45));
+//        dataset.add(new Item_model(R.drawable.c,"item3",69));
+//        dataset.add(new Item_model(R.drawable.d,"item4", 45));
+//
+//        dataset.add(new Item_model(R.drawable.b,"item5",45));
+//        dataset.add(new Item_model(R.drawable.c,"item6",69));
+//        dataset.add(new Item_model(R.drawable.d,"item7", 45));
+//        dataset.add(new Item_model(R.drawable.e,"Item8",78));
 
 
         Item_RecyclerViewAdapter adapter = new Item_RecyclerViewAdapter(getContext(),dataset);
@@ -116,5 +149,24 @@ public class Fragment_item extends Fragment {
 
 
         return view;
+    }
+
+    private  void   getItemData(){
+        Cursor cursor = myDB.readItemData(Integer.parseInt(cat_id));
+        if (cursor.getCount() == 0){
+            Toast.makeText(this.getContext(),"No Item in Category Avilable",Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor.moveToNext()){
+                byte[] iImage = cursor.getBlob(4);
+                String iName = cursor.getString(1);
+                int iPrice = cursor.getInt(2);
+                dataset.add(new Item_model(convertByteArrayToBitmap(iImage),iName,iPrice));
+            }
+        }
+
+
+    }
+    private  Bitmap convertByteArrayToBitmap(byte[] iImage){
+        return BitmapFactory.decodeByteArray(iImage,0,iImage.length);
     }
 }

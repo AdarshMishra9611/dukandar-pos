@@ -90,7 +90,7 @@ public class add_category extends Fragment {
             public void onClick(View view) {
                 DataBaseHelper mydb = new DataBaseHelper( getContext() );
                 byte[] imageArray = convertToByteArray(imagePicker);
-                mydb.addCategory( editTextCategory.getText().toString().trim(),imageArray);
+                mydb.addCategory( editTextCategory.getText().toString().trim(),  imageArray);
             }
         });
 

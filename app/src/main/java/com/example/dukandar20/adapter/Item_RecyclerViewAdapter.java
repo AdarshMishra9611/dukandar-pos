@@ -45,7 +45,7 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
       Item_model item = dataSet.get(position);
 
 
-      holder.item_imageView.setImageResource(item.item_image);
+      holder.item_imageView.setImageBitmap(item.item_image);
       holder.item_textView.setText(item.item_name);
       holder.item_price_textView.setText(String.valueOf(item.item_price));
       holder.productQuantity.setText(String.valueOf(item.productQuantity));

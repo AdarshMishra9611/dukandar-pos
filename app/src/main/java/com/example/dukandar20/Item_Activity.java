@@ -37,6 +37,7 @@ public class Item_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
+//        getCategoryID();
         //Find view
         toolbar = findViewById(R.id.toolbar_item);
         textView = findViewById(R.id.item_title);
@@ -62,45 +63,43 @@ public class Item_Activity extends AppCompatActivity {
         });
 
 
-
-        //Fragment
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.item_container,new Fragment_item());
-        ft.commit();
+        replace_Fragment(new Fragment_item(),0);
 
 
 
 
-        // Add DataSet
-
-//        dataset = new ArrayList<>();
-//        dataset.add(new Item_model(R.drawable.a,"item1",10));
-//        dataset.add(new Item_model(R.drawable.b,"item2",45));
-//        dataset.add(new Item_model(R.drawable.c,"item3",69));
-//        dataset.add(new Item_model(R.drawable.d,"item4", 45));
-//        dataset.add(new Item_model(R.drawable.e,"Item5",78));
 
 
-      // Adding adapter to recyclerview
-
-//        Item_RecyclerViewAdapter adapter = new Item_RecyclerViewAdapter(this,dataset);
-//
-//        GridLayoutManager layoutManager = new GridLayoutManager(this,3);
-//        recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setAdapter(adapter);
 
 
 
     }
     // to replace fragment when add item button clicked
-    public void replace_Fragment(Fragment fragment){
+    public void replace_Fragment(Fragment fragment,int flag){
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.item_container,fragment)
-                .addToBackStack(null)
-                .commit();
+        FragmentManager fm = getSupportFragmentManager();
+        getCategoryID(fragment);
+        FragmentTransaction ft = fm.beginTransaction();
+        if (flag == 0){
+            ft.add( R.id.item_container,fragment);
+
+
+        }else {
+            ft.replace(R.id.item_container,fragment);
+            ft.addToBackStack(null);
+
+        }
+        ft.commit();
+
+    }
+
+    private  void getCategoryID( Fragment fragment){
+         String cat_id = getIntent().getStringExtra("cat_id");
+
+         Bundle bundle = new Bundle();
+         bundle.putString("cat_id",cat_id);
+         fragment.setArguments(bundle);
+
     }
 
 }

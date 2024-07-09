@@ -12,27 +12,44 @@
 
     <!-- Button to add category -->
 
+    <ImageView
+        android:id="@+id/itemImage"
+        android:layout_width="211dp"
+        android:layout_height="195dp"
+        android:layout_margin="40dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/image_border"
+
+        android:clickable="true"
+        android:src="@android:drawable/ic_menu_camera"
+        app:layout_constraintBottom_toTopOf="@+id/editTextItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.714" />
+
     <EditText
-        android:id="@+id/editTextItem"
-        android:layout_width="238dp"
-        android:layout_height="60dp"
+        android:id="@+id/editTextItemPrice"
+        android:layout_width="179dp"
+        android:layout_height="61dp"
         android:layout_marginStart="@dimen/dim_32"
 
         android:layout_marginEnd="@dimen/dim_32"
         android:background="@drawable/edit_text_background"
         android:elevation="4dp"
         android:hint="Enter Price"
+        android:inputType="number"
         android:padding="16dp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextItem"
+        app:layout_constraintVertical_bias="0.115" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/editTextItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dim_32"
@@ -41,20 +58,19 @@
         android:background="@drawable/edit_text_background"
         android:elevation="4dp"
         android:hint="Enter Item Name"
-        android:textColor="@color/black"
         android:padding="16dp"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.362" />
+        app:layout_constraintVertical_bias="0.488" />
 
     <Button
-        android:id="@+id/buttonAdd"
+        android:id="@+id/buttonAddItem"
         android:layout_width="@dimen/dim_150"
         android:layout_height="@dimen/dim_65"
-        android:layout_marginTop="@dimen/dim_96"
         android:background="@drawable/button_background"
         android:elevation="4dp"
         android:paddingStart="24dp"
@@ -67,7 +83,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/editTextItem"
         app:layout_constraintStart_toStartOf="@id/editTextItem"
-        app:layout_constraintTop_toBottomOf="@id/editTextItem"
+        app:layout_constraintTop_toBottomOf="@+id/editTextItemPrice"
         app:layout_constraintVertical_bias="0.285" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

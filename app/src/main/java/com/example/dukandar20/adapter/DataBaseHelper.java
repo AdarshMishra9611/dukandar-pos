@@ -2,6 +2,7 @@ package com.example.dukandar20.adapter;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -114,7 +115,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-
+//insert into  Category
     public void addCategory(String categoryName, byte[] cat_image){
         SQLiteDatabase db = this.getReadableDatabase();
         ContentValues cv = new ContentValues();
@@ -128,5 +129,52 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }else {
             Toast.makeText(context,"Category Added successfully",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    //add to item
+    public void  addItem(String item_Name,int item_price,int cat_id,byte[] item_img){
+        SQLiteDatabase db = this.getReadableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(ITM_NAME,item_Name);
+        cv.put(ITM_PRC,item_price);
+        cv.put(C_ID,cat_id);
+        cv.put(ITM_IMG,item_img);
+        long result =db.insert(ITM_TABLE_NAME,null,cv);
+        if (result == -1){
+            Toast.makeText(context,"Failed",Toast.LENGTH_SHORT).show();
+
+        }else {
+            Toast.makeText(context,"Item Added successfully",Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
+
+
+
+    // read data from category table
+    public Cursor  readCategoryData(){
+        String queary = "SELECT * FROM "+ CAT_TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        if (db !=null ){
+          cursor =  db.rawQuery(queary,null);
+        }
+        return cursor;
+    }
+
+
+    // ITEM READ
+    public Cursor readItemData(int c_id){
+           String queary = "SELECT * FROM "+ ITM_TABLE_NAME+" WHERE "+ C_ID+" = " + c_id;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        if (db !=null ){
+            cursor =  db.rawQuery(queary,null);
+        }
+        return cursor;
     }
 }

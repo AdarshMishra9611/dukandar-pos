@@ -5,6 +5,7 @@ import android.content.Context;
 //import android.graphics.drawable.Drawable;
 //import android.content.Intent;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,15 +25,15 @@ import java.util.ArrayList;
 
 
 public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.RecyclerViewHolder>{
-    private ArrayList cat_name;
-    private ArrayList<Integer>cat_image;
+    private ArrayList cat_name,cat_id;
+    private ArrayList<Bitmap>cat_image;
     private Activity activity;
     private Context mcontext;
 
 
-    public RecylerViewAdapter(ArrayList cat_name, ArrayList<Integer> cat_image, Activity activity, Context mcontext) {
+    public RecylerViewAdapter(ArrayList cat_id , ArrayList cat_name, ArrayList<Bitmap> cat_image, Activity activity, Context mcontext) {
 
-
+        this.cat_id = cat_id;
         this.cat_name = cat_name;
         this.cat_image = cat_image;
         this.activity = activity;
@@ -54,17 +55,19 @@ public class RecylerViewAdapter extends RecyclerView.Adapter<RecylerViewAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
-        String categoryName = (String) cat_name.get(position);
-        int categoryImageResource = cat_image.get(position);
-       // Drawable index_cat_image = mcontext.getResources().getDrawable(cat_image_resourceId) ;
 
+        String categoryName = (String) cat_name.get(position);
+        Bitmap categoryImageResource =  cat_image.get(position);
+       // Drawable index_cat_image = mcontext.getResources().getDrawable(cat_image_resourceId) ;
+       String categoryID = String.valueOf(cat_id.get(position));// cat id
         holder.cardText.setText(String.valueOf(cat_name.get(position)));
-        holder.card_image.setImageResource(categoryImageResource);
+        holder.card_image.setImageBitmap(categoryImageResource);
         holder.card_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent = new Intent(mcontext, Item_Activity.class);
+                intent.putExtra("cat_id",categoryID);
                 activity.startActivity(intent);
 
             }
