@@ -24,10 +24,13 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
 
     Context context;
     ArrayList<cart_model> dataset;
+    OnCartItemChangeListener onCartItemChangeListener;
+    DataBaseHelper myDB;
 
-    public Cart_Adapter(Context context, ArrayList<cart_model> dataset){
+    public Cart_Adapter(Context context, ArrayList<cart_model> dataset,OnCartItemChangeListener onCartItemChangeListener){
         this.context = context;
         this.dataset = dataset;
+        this.onCartItemChangeListener = onCartItemChangeListener;
     }
 
     @NonNull
@@ -45,7 +48,7 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
         cart_model item = dataset.get(position);
 
         holder.productName.setText(item.productName);
-        holder.productPrice.setText(new String(String.valueOf(item.productPrice)));
+        holder.productPrice.setText(new String(String.valueOf(item.productPrice * item.productQuantity)));
         holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
 
         //Increase button
@@ -56,19 +59,34 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
             item.productQuantity = curreentQuantity;
             holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
             notifyItemChanged(position);
+            if (onCartItemChangeListener != null) {
+                onCartItemChangeListener.onCartItemChange();
+            }
 
 
         });
         // decrease button
         holder.buttonDecrease.setOnClickListener(view -> {
             int currentQuantity = item.productQuantity;
-            if (currentQuantity >=0)
-                currentQuantity=0;
+            if (currentQuantity >0)
+                currentQuantity--;
 
 
             item.productQuantity = currentQuantity;
             holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
             notifyItemChanged(position);
+            if (onCartItemChangeListener != null) {
+                onCartItemChangeListener.onCartItemChange();
+            }
+        });
+
+
+        holder.deleteButton.setOnClickListener(view ->{
+            myDB = new DataBaseHelper(context);
+            myDB.clearCart();
+            if (onCartItemChangeListener != null) {
+                onCartItemChangeListener.onCartItemChange();
+            }
         });
 
         // if edit text is changed manully
@@ -85,6 +103,9 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
                 if (!charSequence.toString().isEmpty()) {
                     int quantity = Integer.parseInt(charSequence.toString());
                     item.productQuantity = quantity;
+                    if (onCartItemChangeListener != null) {
+                        onCartItemChangeListener.onCartItemChange();
+                    }
                 }
 
             }
@@ -128,8 +149,14 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
 
 
 
+
     }
+
+
 }
+    public interface OnCartItemChangeListener {
+        void onCartItemChange();
+    }
 
 
 

@@ -16,8 +16,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.dukandar20.adapter.DataBaseHelper;
 import com.example.dukandar20.adapter.Item_RecyclerViewAdapter;
 import com.example.dukandar20.adapter.Item_model;
+import com.example.dukandar20.adapter.cart_model;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ public class Item_Activity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ImageView cart_icon;
+    ArrayList<cart_model> addTOcart;
 //    RecyclerView recyclerView;
 //    ArrayList<Item_model> dataset;
 
@@ -74,6 +77,10 @@ public class Item_Activity extends AppCompatActivity {
 
 
     }
+
+
+
+
     // to replace fragment when add item button clicked
     public void replace_Fragment(Fragment fragment,int flag){
 
@@ -101,5 +108,8 @@ public class Item_Activity extends AppCompatActivity {
          fragment.setArguments(bundle);
 
     }
+
+
+
 
 }

@@ -1,18 +1,21 @@
 package com.example.dukandar20;
 
 import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dukandar20.adapter.Cart_Adapter;
+import com.example.dukandar20.adapter.DataBaseHelper;
 import com.example.dukandar20.adapter.cart_model;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -33,9 +36,12 @@ public class Fragment_cart extends Fragment {
 
     ArrayList<cart_model> dataset;
     RecyclerView recyclerView;
-    TextView total;
+    public TextView total;
     Button buttonCheckout;
     FloatingActionButton instantAdd;
+    Cart_Adapter adapter;
+
+    DataBaseHelper myDB;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -84,23 +90,35 @@ public class Fragment_cart extends Fragment {
         buttonCheckout = view.findViewById(R.id.buttonCheckout);
         instantAdd = view.findViewById(R.id.instant_floatingActionButton);
 
+        //dataset
+        myDB = new DataBaseHelper(getContext());
+        dataset = new ArrayList<>();
+        cartData();
+
+
+
         instantAdd.setOnClickListener(view1 -> {
             ((Cart_Activity) getActivity()).replace_cart_fragment(new Fragment_instantAdd());
         });
 
+        total.setText(String.valueOf( totalAmount(dataset) ));
 
-        //dataset
-        dataset = new ArrayList<>();
-        dataset.add(new cart_model("product1",1,45));
-        dataset.add(new cart_model("product2",1,45));
-        dataset.add(new cart_model("product3",1,45));
-        dataset.add(new cart_model("product4",1,45));
-        dataset.add(new cart_model("product5",1,45));
-        dataset.add(new cart_model("product6",1,45));
-        dataset.add(new cart_model("product7",1,45));
-        dataset.add(new cart_model("product8",1,45));
 
-        Cart_Adapter adapter = new Cart_Adapter(getContext(),dataset);
+
+
+
+
+//        dataset.add(new cart_model("product1",1,45));
+//        dataset.add(new cart_model("product2",1,45));
+//        dataset.add(new cart_model("product3",1,45));
+//        dataset.add(new cart_model("product4",1,45));
+//        dataset.add(new cart_model("product5",1,45));
+//        dataset.add(new cart_model("product6",1,45));
+//        dataset.add(new cart_model("product7",1,45));
+//        dataset.add(new cart_model("product8",1,45));
+
+
+        adapter = new Cart_Adapter(getContext(),dataset,this::onCartItemChange);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
@@ -109,4 +127,41 @@ public class Fragment_cart extends Fragment {
 
         return  view;
     }
+
+    public void onCartItemChange() {
+        total.setText(String.valueOf(totalAmount(dataset)));
+    }
+    private  void cartData(){
+        Cursor cursor = myDB.readCartData();
+
+        if (cursor.getCount() == 0){
+            Toast.makeText(this.getContext(),"cart is empty",Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor.moveToNext()){
+                String productName = cursor.getString(1);
+                int productPrice = cursor.getInt(2);
+                int prductQuantity = cursor.getInt(3);
+
+                dataset.add(new cart_model(productName,productPrice,prductQuantity));
+            }
+        }
+
+
+
+
+    }
+    private int totalAmount(ArrayList<cart_model> dataset){
+        int totalAmount =0;
+        for (int i = 0; i<dataset.size();i++){
+            cart_model item = dataset.get(i);;
+            int total =(item.productPrice*item.productQuantity);
+            totalAmount+=total;
+        }
+
+        return totalAmount;
+    }
+
+
+
+
 }

@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     private Context context;
@@ -45,6 +47,13 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String QUANTITY = "Quantity";
     public static final String UNIT_PRICE = "UnitPrice";
     public static final String TOTAL_PRICE = "TotalPrice";
+
+    /// cart table
+    public static final String CART_TABLE_NAME = "my_Cart";
+    public static final String CART_ID = "cart_id";
+    public static final String PRODUCT_NAME = "product_name";
+    public static final String PRODUCT_PRICE = "product_price";
+    public static final String PRODUCT_QUANTITY = "product_quantity";
 
     public DataBaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -93,11 +102,23 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + PRODUCT_ID + ") REFERENCES Products(ProductID)" +
                 ");";
 
+
+
+
+        // queary to create CartTable
+        String createCartTableQuery = "CREATE TABLE " + CART_TABLE_NAME + " (" +
+                CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                PRODUCT_NAME + " TEXT NOT NULL, " +
+                PRODUCT_PRICE + " DECIMAL(10, 2) NOT NULL, " +
+                PRODUCT_QUANTITY + " INTEGER NOT NULL" +
+                ");";
+
         // Execute the queries to create the tables
         db.execSQL(createCategoryTableQuery);
         db.execSQL(createItemTableQuery);
         db.execSQL(createBillsTableQuery);
         db.execSQL(createBillItemsTableQuery);
+        db.execSQL(createCartTableQuery);
 
         // Log the database path
         Log.d("DataBaseHelper", "Database created at: " + db.getPath());
@@ -110,6 +131,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + ITM_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BILLS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + BILL_ITEMS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + CART_TABLE_NAME);
 
         // Recreate tables
         onCreate(db);
@@ -151,6 +173,53 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
+    // add to cart
+    // add to cart
+    public void addItemsToCart(cart_model item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Check if the item already exists in the cart
+        String query = "SELECT * FROM " + CART_TABLE_NAME + " WHERE " + PRODUCT_NAME + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{item.productName});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            // Item exists, update the quantity
+            int currentQuantity = cursor.getInt(cursor.getColumnIndexOrThrow(PRODUCT_QUANTITY));
+            int newQuantity = item.productQuantity;
+
+            ContentValues cv = new ContentValues();
+            cv.put(PRODUCT_QUANTITY, newQuantity);
+
+            int result = db.update(CART_TABLE_NAME, cv, PRODUCT_NAME + " = ?", new String[]{item.productName});
+            if (result == -1) {
+                Toast.makeText(context, "Failed to update item quantity in cart: " + item.productName, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Item quantity updated in cart: " + item.productName, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // Item does not exist, insert new item
+            ContentValues cv = new ContentValues();
+            cv.put(PRODUCT_NAME, item.productName);
+            cv.put(PRODUCT_PRICE, item.productPrice);
+            cv.put(PRODUCT_QUANTITY, item.productQuantity);
+
+            long result = db.insert(CART_TABLE_NAME, null, cv);
+            if (result == -1) {
+                Toast.makeText(context, "Failed to add item to cart: " + item.productName, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Item added to cart: " + item.productName, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        Toast.makeText(context, "Items processed successfully", Toast.LENGTH_SHORT).show();
+    }
+
+
+
 
 
 
@@ -177,4 +246,37 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return cursor;
     }
+
+
+
+
+
+
+
+    // cart read
+    public Cursor readCartData(){
+        String queary = "SELECT * FROM "+CART_TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        if(db != null){
+            cursor = db.rawQuery(queary,null);
+        }
+        return cursor;
+    }
+
+    // to clear the cart
+
+    public void clearCart() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(CART_TABLE_NAME, null, null);
+        if (result == -1) {
+            Toast.makeText(context, "Failed to clear cart", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Cart cleared successfully", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+
 }

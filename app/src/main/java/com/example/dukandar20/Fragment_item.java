@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.dukandar20.adapter.DataBaseHelper;
 import com.example.dukandar20.adapter.Item_RecyclerViewAdapter;
 import com.example.dukandar20.adapter.Item_model;
+import com.example.dukandar20.adapter.cart_model;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class Fragment_item extends Fragment {
     DataBaseHelper myDB;
     RecyclerView recyclerView;
     String cat_id  ;
+    private  ArrayList<cart_model> addTOCart;
 
 
 
@@ -160,7 +162,7 @@ public class Fragment_item extends Fragment {
                 byte[] iImage = cursor.getBlob(4);
                 String iName = cursor.getString(1);
                 int iPrice = cursor.getInt(2);
-                dataset.add(new Item_model(convertByteArrayToBitmap(iImage),iName,iPrice));
+                dataset.add(new Item_model(convertByteArrayToBitmap(iImage),iName,iPrice,0));
             }
         }
 
@@ -169,4 +171,12 @@ public class Fragment_item extends Fragment {
     private  Bitmap convertByteArrayToBitmap(byte[] iImage){
         return BitmapFactory.decodeByteArray(iImage,0,iImage.length);
     }
+
+    // Method to handle back press
+
+
+
+
+
+
 }
