@@ -12,24 +12,43 @@
 
     <!-- Button to add category -->
 
+
     <EditText
         android:id="@+id/instant_productPrice"
-        android:layout_width="238dp"
-        android:layout_height="60dp"
+        android:layout_width="126dp"
+        android:layout_height="61dp"
         android:layout_marginStart="@dimen/dim_32"
 
         android:layout_marginEnd="@dimen/dim_32"
         android:background="@drawable/edit_text_background"
         android:elevation="4dp"
         android:hint="Enter Price"
+        android:inputType="number"
         android:padding="16dp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.841"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/instant_quentity"
+        android:layout_width="119dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="@dimen/dim_32"
+
+        android:background="@drawable/edit_text_background"
+        android:elevation="4dp"
+        android:hint="1"
+        android:inputType="number"
+        android:padding="16dp"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/instant_productPrice"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/instant_productName"

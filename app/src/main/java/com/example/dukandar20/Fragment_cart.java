@@ -101,7 +101,7 @@ public class Fragment_cart extends Fragment {
             ((Cart_Activity) getActivity()).replace_cart_fragment(new Fragment_instantAdd());
         });
 
-        total.setText(String.valueOf( totalAmount(dataset) ));
+        total.setText(String.valueOf( "Total ₹"+totalAmount(dataset) ));
 
 
 
@@ -129,7 +129,7 @@ public class Fragment_cart extends Fragment {
     }
 
     public void onCartItemChange() {
-        total.setText(String.valueOf(totalAmount(dataset)));
+        total.setText(String.valueOf("Total ₹"+totalAmount(dataset)));
     }
     private  void cartData(){
         Cursor cursor = myDB.readCartData();

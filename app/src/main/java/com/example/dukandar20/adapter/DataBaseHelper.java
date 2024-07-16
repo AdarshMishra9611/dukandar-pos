@@ -201,6 +201,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put(PRODUCT_NAME, item.productName);
             cv.put(PRODUCT_PRICE, item.productPrice);
+
+            //if product queantiy is zero
+            if(item.productQuantity == 0){
+                item.productQuantity = 1;
+            }
             cv.put(PRODUCT_QUANTITY, item.productQuantity);
 
             long result = db.insert(CART_TABLE_NAME, null, cv);
@@ -274,6 +279,37 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         } else {
             Toast.makeText(context, "Cart cleared successfully", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+
+    // Add this method to fetch the quantity of a specific item in the cart
+    public Cursor getCartItemQuantity(String productName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + PRODUCT_QUANTITY + " FROM " + CART_TABLE_NAME + " WHERE " + PRODUCT_NAME + " = ?";
+        return db.rawQuery(query, new String[]{productName});
+    }
+
+    // Remove item from cart
+
+    public void removeItemFromCart(String productName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Define the criteria for deletion
+        String whereClause = PRODUCT_NAME + "= ?";
+        String[] whereArgs = {productName};
+
+        // Perform the deletion
+
+        int result = db.delete(CART_TABLE_NAME,whereClause,whereArgs);
+
+        // Provide feedback to the user
+        if (result == -1) {
+            Toast.makeText(context, "Failed to remove item from cart: " + productName, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Item removed from cart: " + productName, Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
 

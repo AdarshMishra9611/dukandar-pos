@@ -48,7 +48,7 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
         cart_model item = dataset.get(position);
 
         holder.productName.setText(item.productName);
-        holder.productPrice.setText(new String(String.valueOf(item.productPrice * item.productQuantity)));
+        holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
         holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
 
         //Increase button
@@ -58,7 +58,10 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
             curreentQuantity++;
             item.productQuantity = curreentQuantity;
             holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
-            notifyItemChanged(position);
+
+            insert( new cart_model(item.productName,item.productPrice,item.productQuantity));
+
+
             if (onCartItemChangeListener != null) {
                 onCartItemChangeListener.onCartItemChange();
             }
@@ -72,9 +75,17 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
                 currentQuantity--;
 
 
+
             item.productQuantity = currentQuantity;
             holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
-            notifyItemChanged(position);
+            insert( new cart_model(item.productName,item.productPrice,item.productQuantity));
+            if(currentQuantity == 0){
+                myDB.removeItemFromCart(item.productName);
+                dataset.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, dataset.size());
+            }
+
             if (onCartItemChangeListener != null) {
                 onCartItemChangeListener.onCartItemChange();
             }
@@ -83,10 +94,16 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
 
         holder.deleteButton.setOnClickListener(view ->{
             myDB = new DataBaseHelper(context);
-            myDB.clearCart();
+            myDB.removeItemFromCart(item.productName);
+            dataset.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, dataset.size());
+
+
             if (onCartItemChangeListener != null) {
                 onCartItemChangeListener.onCartItemChange();
             }
+
         });
 
         // if edit text is changed manully
@@ -156,6 +173,12 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
 }
     public interface OnCartItemChangeListener {
         void onCartItemChange();
+    }
+    private void  insert(cart_model item){
+        myDB = new DataBaseHelper(context);
+
+
+        myDB.addItemsToCart(item);
     }
 
 

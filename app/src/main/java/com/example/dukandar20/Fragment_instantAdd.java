@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.dukandar20.adapter.DataBaseHelper;
+import com.example.dukandar20.adapter.cart_model;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Fragment_instantAdd#newInstance} factory method to
@@ -26,8 +29,10 @@ public class Fragment_instantAdd extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    EditText productName,productPrice;
+    EditText productName,productPrice,productQty;
     Button buttonAddProduct;
+    DataBaseHelper myDB;
+
 
 
     public Fragment_instantAdd() {
@@ -71,7 +76,23 @@ public class Fragment_instantAdd extends Fragment {
 
        productName = view.findViewById(R.id.instant_productName);
        productPrice= view.findViewById(R.id.instant_productPrice);
+       productQty = view.findViewById(R.id.instant_quentity);
        buttonAddProduct = view.findViewById(R.id.instant_buttonAdd);
+
+
+       buttonAddProduct.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               myDB = new DataBaseHelper(getContext());
+               cart_model cart_model = new cart_model(
+                       productName.getText().toString().trim(),
+                       Integer.parseInt(productPrice.getText().toString().trim()),
+                       Integer.parseInt((productQty.getText().toString().trim()))
+
+               );
+               myDB.addItemsToCart(cart_model);
+           }
+       });
 
 
 

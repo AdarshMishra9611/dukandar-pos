@@ -2,6 +2,7 @@ package com.example.dukandar20.adapter;
 
 
 import android.content.Context;
+import android.database.Cursor;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -26,13 +27,15 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
    private Context mcontext ;
    private ArrayList<Item_model> dataSet;
    private boolean incDceButtonClicked = false;
-
-
    DataBaseHelper myDB;
+
+
+
 
     public Item_RecyclerViewAdapter(Context mcontext, ArrayList<Item_model> dataSet) {
         this.mcontext = mcontext;
         this.dataSet = dataSet;
+        this.myDB = new DataBaseHelper(mcontext);
     }
 
 
@@ -53,8 +56,18 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
 
         holder.item_imageView.setImageBitmap(item.item_image);
         holder.item_textView.setText(item.item_name);
-        holder.item_price_textView.setText(String.valueOf(item.item_price));
+        holder.item_price_textView.setText(String.valueOf("₹"+item.item_price));
+
+        Cursor cursor = myDB.getCartItemQuantity(item.item_name);
+        if (cursor != null && cursor.moveToFirst()) {
+            int cartQuantity = cursor.getInt(cursor.getColumnIndexOrThrow(DataBaseHelper.PRODUCT_QUANTITY));
+            item.productQuantity = cartQuantity;
+            cursor.close();
+        } else {
+            item.productQuantity = 0; // Default quantity if not in cart
+        }
         holder.productQuantity.setText(String.valueOf(item.productQuantity));
+
 
         // Increase button
         holder.buttonIncrease.setOnClickListener(view -> {
@@ -64,6 +77,10 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
             item.productQuantity = currentQuantity;
             holder.productQuantity.setText(String.valueOf(currentQuantity));
 
+            cart_model cartModel = new cart_model(item.item_name, item.item_price, item.productQuantity);
+            insert(cartModel);
+
+
         });
 
 
@@ -71,10 +88,20 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
         holder.buttonDecrease.setOnClickListener(view -> {
             int currentQuantity = item.productQuantity;
 
-            if (currentQuantity > 0)
+            if (currentQuantity > 0){
                 currentQuantity--;
+            }
+
+            if(currentQuantity == 0){
+                myDB.removeItemFromCart(item.item_name);
+            }
+
             item.productQuantity = currentQuantity;
             holder.productQuantity.setText(String.valueOf(currentQuantity));
+
+            //to update
+
+            insert( new cart_model(item.item_name, item.item_price, item.productQuantity));
 
         });
 
@@ -114,10 +141,9 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
                 holder.productQuantity.setText(String.valueOf(item.productQuantity+1));
             }
 
-            myDB = new DataBaseHelper(mcontext);
+            // to insert
+            insert( new cart_model(item.item_name, item.item_price, item.productQuantity));
 
-            cart_model cartModel = new cart_model(item.item_name, item.item_price, item.productQuantity);
-            myDB.addItemsToCart(cartModel);
         });
     }
 
@@ -152,7 +178,14 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
         }
     }
 
-    // increase and decrease
+    // insert into database
+    private void  insert(cart_model item){
+        myDB = new DataBaseHelper(mcontext);
+
+
+        myDB.addItemsToCart(item);
+    }
+
 
 
 }
