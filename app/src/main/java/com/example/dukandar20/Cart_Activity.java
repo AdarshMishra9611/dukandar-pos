@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.contentcapture.DataRemovalRequest;
 import android.widget.FrameLayout;
 import androidx.appcompat.widget.Toolbar;
@@ -19,6 +20,7 @@ public class Cart_Activity extends AppCompatActivity {
     Toolbar toolbar;
     FrameLayout cart_frameLayout;
     DrawerLayout drawerLayout;
+    private GestureDetector gestureDetector;
 
 
 
@@ -53,6 +55,11 @@ public class Cart_Activity extends AppCompatActivity {
         ft.commit();
 
 
+        // getureDetector detecor
+
+
+
+
 
     }
     public void replace_cart_fragment(Fragment fragment){
@@ -62,4 +69,6 @@ public class Cart_Activity extends AppCompatActivity {
                         .addToBackStack(null)
                         .commit();
     }
+
+
 }

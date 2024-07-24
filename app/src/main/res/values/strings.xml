@@ -20,6 +20,7 @@
     <string name="pluse">+</string>
     <string name="name">Name</string>
     <string name="price">Price</string>
+    <string name="enter_customer_name">Enter Customer Name</string>
 
 
 </resources>

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -20,10 +21,22 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
 
     // Constants for the database table and column names
+
+    // customer
+    public static final String CUSTOMERS_TABLE_NAME = "Customers";
+    public static final String CUSTOMER_ID = "CustomerID";
+    public static final String CUSTOMER_NAME = "CustomerName";
+    public static final String CUSTOMER_PHONE = "CustomerPhone";
     public static final String CAT_TABLE_NAME = "my_category";
+
+
+
+    // category table
     public static final String CAT_ID = "cat_id";
     public static final String CAT_IMG = "cat_img";
     public static final String CAT_NAME = "category_name";
+
+    // Item table
 
     public static final String ITM_TABLE_NAME = "my_item";
     public static final String ITM_ID = "itm_id";
@@ -32,21 +45,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String ITM_IMG = "itm_img";
     public static final String C_ID = "cat_id";
 
-    public static final String BILLS_TABLE_NAME = "Bills";
-    public static final String BILL_ID = "BillID";
-    public static final String CUSTOMER_ID = "CustomerID";
-    public static final String BILL_DATE = "BillDate";
-    public static final String DUE_DATE = "DueDate";
-    public static final String TOTAL_AMOUNT = "TotalAmount";
-    public static final String STATUS = "Status";
 
-    public static final String BILL_ITEMS_TABLE_NAME = "BillItems";
-    public static final String ITEM_ID = "ItemID";
-    public static final String BILL_ID_REF = "BillID"; // Reference to BillID in BillItems table
-    public static final String PRODUCT_ID = "ProductID";
-    public static final String QUANTITY = "Quantity";
-    public static final String UNIT_PRICE = "UnitPrice";
-    public static final String TOTAL_PRICE = "TotalPrice";
 
     /// cart table
     public static final String CART_TABLE_NAME = "my_Cart";
@@ -55,6 +54,38 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String PRODUCT_PRICE = "product_price";
     public static final String PRODUCT_QUANTITY = "product_quantity";
 
+    //Bill table
+    public static final String BILL_TABLE_NAME = "Bill";
+    public static final String BILL_ID = "BillID";
+    public static final String BILL_CUSTOMER_ID = "CustomerID";
+    public static final String BILL_DATE = "BillDate";
+    public static final String BILL_TOTAL_AMOUNT = "TotalAmount";
+    public static final String BILL_STATUS = "Status";
+    public static final String BILL_PAYMENT_METHOD = "PaymentMethod";
+
+    // BillItem table
+    public static final String BILL_ITEM_TABLE_NAME = "BillItem";
+    public static final String BILL_ITEM_ID = "BillItemID";
+    public static final String BILL_ITEM_BILL_ID = "BillID";
+    public static final String BILL_ITEM_ITM_ID = "ItemID";
+    public static final String BILL_ITEM_QUANTITY = "Quantity";
+    public static final String BILL_ITEM_PRICE = "Price";
+
+    // CustomerBalance table
+    public static final String CUSTOMER_BALANCE_TABLE_NAME = "CustomerBalance";
+    public static final String BALANCE_ID = "BalanceID";
+    public static final String BALANCE_CUSTOMER_ID = "CustomerID";
+    public static final String BALANCE_AMOUNT = "Balance";
+    public static final String BALANCE_LAST_UPDATE = "LastUpdate";
+
+    // BalanceHistory table
+    public static final String BALANCE_HISTORY_TABLE_NAME = "BalanceHistory";
+    public static final String HISTORY_ID = "HistoryID";
+    public static final String HISTORY_CUSTOMER_ID = "CustomerID";
+    public static final String HISTORY_BALANCE_CHANGE = "BalanceChange";
+    public static final String HISTORY_CHANGE_DATE = "ChangeDate";
+
+
     public DataBaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
@@ -62,6 +93,15 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        // Query to create Customers table
+        String createCustomersTableQuery = "CREATE TABLE " + CUSTOMERS_TABLE_NAME + " (" +
+                CUSTOMER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                CUSTOMER_NAME + " TEXT NOT NULL, " +
+                CUSTOMER_PHONE + " TEXT NOT NULL" +
+                ");";
+
+
         // Query to create my_category table
         String createCategoryTableQuery = "CREATE TABLE " + CAT_TABLE_NAME + " (" +
                 CAT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -79,32 +119,6 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY(" + C_ID + ") REFERENCES " + CAT_TABLE_NAME + "(" + CAT_ID + ")" +
                 ");";
 
-        // Query to create Bills table
-        String createBillsTableQuery = "CREATE TABLE " + BILLS_TABLE_NAME + " (" +
-                BILL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                CUSTOMER_ID + " INTEGER, " +
-                BILL_DATE + " DATE NOT NULL, " +
-                DUE_DATE + " DATE, " +
-                TOTAL_AMOUNT + " DECIMAL(10, 2) NOT NULL, " +
-                STATUS + " VARCHAR(50) NOT NULL, " +
-                "FOREIGN KEY(" + CUSTOMER_ID + ") REFERENCES Customers(CustomerID)" +
-                ");";
-
-        // Query to create BillItems table
-        String createBillItemsTableQuery = "CREATE TABLE " + BILL_ITEMS_TABLE_NAME + " (" +
-                ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                BILL_ID_REF + " INTEGER, " +
-                PRODUCT_ID + " INTEGER, " +
-                QUANTITY + " INTEGER NOT NULL, " +
-                UNIT_PRICE + " DECIMAL(10, 2) NOT NULL, " +
-                TOTAL_PRICE + " DECIMAL(10, 2) NOT NULL, " +
-                "FOREIGN KEY(" + BILL_ID_REF + ") REFERENCES " + BILLS_TABLE_NAME + "(" + BILL_ID + "), " +
-                "FOREIGN KEY(" + PRODUCT_ID + ") REFERENCES Products(ProductID)" +
-                ");";
-
-
-
-
         // queary to create CartTable
         String createCartTableQuery = "CREATE TABLE " + CART_TABLE_NAME + " (" +
                 CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -113,12 +127,58 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 PRODUCT_QUANTITY + " INTEGER NOT NULL" +
                 ");";
 
+
+        String createBillTableQuery = "CREATE TABLE " + BILL_TABLE_NAME + " (" +
+                BILL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BILL_CUSTOMER_ID + " INTEGER, " +
+                BILL_DATE + " TEXT, " +
+                BILL_TOTAL_AMOUNT + " REAL, " +
+                BILL_STATUS + " TEXT, " +
+                BILL_PAYMENT_METHOD + " TEXT, " +
+                "FOREIGN KEY(" + BILL_CUSTOMER_ID + ") REFERENCES " + CUSTOMERS_TABLE_NAME + "(" + CUSTOMER_ID + ")" +
+                ");";
+
+        // Query to create BillItem table
+        String createBillItemTableQuery = "CREATE TABLE " + BILL_ITEM_TABLE_NAME + " (" +
+                BILL_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BILL_ITEM_BILL_ID + " INTEGER, " +
+                BILL_ITEM_ITM_ID + " INTEGER, " +
+                BILL_ITEM_QUANTITY + " INTEGER, " +
+                BILL_ITEM_PRICE + " REAL, " +
+                "FOREIGN KEY(" + BILL_ITEM_BILL_ID + ") REFERENCES " + BILL_TABLE_NAME + "(" + BILL_ID + "), " +
+                "FOREIGN KEY(" + BILL_ITEM_ITM_ID + ") REFERENCES " + ITM_TABLE_NAME + "(" + ITM_ID + ")" +
+                ");";
+
+        // Query to create CustomerBalance table
+        String createCustomerBalanceTableQuery = "CREATE TABLE " + CUSTOMER_BALANCE_TABLE_NAME + " (" +
+                BALANCE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BALANCE_CUSTOMER_ID + " INTEGER, " +
+                BALANCE_AMOUNT + " REAL, " +
+                BALANCE_LAST_UPDATE + " TEXT, " +
+                "FOREIGN KEY(" + BALANCE_CUSTOMER_ID + ") REFERENCES " + CUSTOMERS_TABLE_NAME + "(" + CUSTOMER_ID + ")" +
+                ");";
+
+
+
+        // Query to create BalanceHistory table
+        String createBalanceHistoryTableQuery = "CREATE TABLE " + BALANCE_HISTORY_TABLE_NAME + " (" +
+                HISTORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                HISTORY_CUSTOMER_ID + " INTEGER, " +
+                HISTORY_BALANCE_CHANGE + " REAL, " +
+                HISTORY_CHANGE_DATE + " TEXT, " +
+                "FOREIGN KEY(" + HISTORY_CUSTOMER_ID + ") REFERENCES " + CUSTOMERS_TABLE_NAME + "(" + CUSTOMER_ID + ")" +
+                ");";
+
         // Execute the queries to create the tables
         db.execSQL(createCategoryTableQuery);
         db.execSQL(createItemTableQuery);
-        db.execSQL(createBillsTableQuery);
-        db.execSQL(createBillItemsTableQuery);
         db.execSQL(createCartTableQuery);
+        db.execSQL(createCustomersTableQuery);
+        db.execSQL(createBillTableQuery);
+        db.execSQL(createBillItemTableQuery);
+        db.execSQL(createCustomerBalanceTableQuery);
+        db.execSQL(createBalanceHistoryTableQuery);
+
 
         // Log the database path
         Log.d("DataBaseHelper", "Database created at: " + db.getPath());
@@ -129,15 +189,18 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         // Drop old tables if they exist
         db.execSQL("DROP TABLE IF EXISTS " + CAT_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ITM_TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + BILLS_TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + BILL_ITEMS_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CART_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMERS_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BILL_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BILL_ITEM_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + CUSTOMER_BALANCE_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BALANCE_HISTORY_TABLE_NAME);
 
         // Recreate tables
         onCreate(db);
     }
 
-//insert into  Category
+//Insert into  Category
     public void addCategory(String categoryName, byte[] cat_image){
         SQLiteDatabase db = this.getReadableDatabase();
         ContentValues cv = new ContentValues();
@@ -153,7 +216,19 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    //add to item
+
+// Read data from category table
+    public Cursor  readCategoryData(){
+        String queary = "SELECT * FROM "+ CAT_TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        if (db !=null ){
+            cursor =  db.rawQuery(queary,null);
+        }
+        return cursor;
+    }
+
+// Insert into item
     public void  addItem(String item_Name,int item_price,int cat_id,byte[] item_img){
         SQLiteDatabase db = this.getReadableDatabase();
         ContentValues cv = new ContentValues();
@@ -173,9 +248,21 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-    // add to cart
-    // add to cart
-    public void addItemsToCart(cart_model item) {
+//Read data from Item
+    public Cursor readItemData(int c_id){
+        String queary = "SELECT * FROM "+ ITM_TABLE_NAME+" WHERE "+ C_ID+" = " + c_id;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        if (db !=null ){
+            cursor =  db.rawQuery(queary,null);
+        }
+        return cursor;
+    }
+
+
+// Insert into cart
+    public void addItemsToCart(@NonNull cart_model item) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Check if the item already exists in the cart
@@ -223,42 +310,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Toast.makeText(context, "Items processed successfully", Toast.LENGTH_SHORT).show();
     }
 
-
-
-
-
-
-    // read data from category table
-    public Cursor  readCategoryData(){
-        String queary = "SELECT * FROM "+ CAT_TABLE_NAME;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-        if (db !=null ){
-          cursor =  db.rawQuery(queary,null);
-        }
-        return cursor;
-    }
-
-
-    // ITEM READ
-    public Cursor readItemData(int c_id){
-           String queary = "SELECT * FROM "+ ITM_TABLE_NAME+" WHERE "+ C_ID+" = " + c_id;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = null;
-
-        if (db !=null ){
-            cursor =  db.rawQuery(queary,null);
-        }
-        return cursor;
-    }
-
-
-
-
-
-
-
-    // cart read
+//Read from Cart
     public Cursor readCartData(){
         String queary = "SELECT * FROM "+CART_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -269,8 +321,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    // to clear the cart
-
+//Clear the cart
     public void clearCart() {
         SQLiteDatabase db = this.getWritableDatabase();
         int result = db.delete(CART_TABLE_NAME, null, null);
@@ -282,16 +333,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-
-    // Add this method to fetch the quantity of a specific item in the cart
-    public Cursor getCartItemQuantity(String productName) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT " + PRODUCT_QUANTITY + " FROM " + CART_TABLE_NAME + " WHERE " + PRODUCT_NAME + " = ?";
-        return db.rawQuery(query, new String[]{productName});
-    }
-
-    // Remove item from cart
-
+// Remove item from cart
     public void removeItemFromCart(String productName){
         SQLiteDatabase db = this.getWritableDatabase();
         // Define the criteria for deletion
@@ -311,6 +353,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
     }
+
+
+
+
+
+
+
+
+//Add this method to fetch the quantity of a specific item in the cart
+    public Cursor getCartItemQuantity(String productName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT " + PRODUCT_QUANTITY + " FROM " + CART_TABLE_NAME + " WHERE " + PRODUCT_NAME + " = ?";
+        return db.rawQuery(query, new String[]{productName});
+    }
+
+
+
+
+
 
 
 

@@ -26,8 +26,7 @@ import java.util.ArrayList;
 public class fragment_category extends Fragment {
 
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
 
     // TODO: Rename and change types of parameters
 
@@ -42,14 +41,7 @@ public class fragment_category extends Fragment {
     }
 
 
-    public static fragment_category newInstance(String param1, String param2) {
-        fragment_category fragment = new fragment_category();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

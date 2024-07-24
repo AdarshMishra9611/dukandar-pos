@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+import com.example.dukandar20.Printer.BluetoothPrinter;
 import com.example.dukandar20.adapter.Cart_Adapter;
 import com.example.dukandar20.adapter.DataBaseHelper;
 import com.example.dukandar20.adapter.cart_model;
@@ -37,7 +39,7 @@ public class Fragment_cart extends Fragment {
     ArrayList<cart_model> dataset;
     RecyclerView recyclerView;
     public TextView total;
-    Button buttonCheckout;
+    Button buttonCheckout,checkoutButton;
     FloatingActionButton instantAdd;
     Cart_Adapter adapter;
 
@@ -89,13 +91,20 @@ public class Fragment_cart extends Fragment {
         total = view.findViewById(R.id.textViewTotalPrice);
         buttonCheckout = view.findViewById(R.id.buttonCheckout);
         instantAdd = view.findViewById(R.id.instant_floatingActionButton);
+        checkoutButton = view.findViewById(R.id.buttonCheckout);
 
         //dataset
         myDB = new DataBaseHelper(getContext());
         dataset = new ArrayList<>();
         cartData();
 
-
+        BluetoothPrinter printer = new BluetoothPrinter(getContext(),getActivity());
+        checkoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((Cart_Activity) getActivity()).replace_cart_fragment(new Fragment_checkOut());
+            }
+        });
 
         instantAdd.setOnClickListener(view1 -> {
             ((Cart_Activity) getActivity()).replace_cart_fragment(new Fragment_instantAdd());

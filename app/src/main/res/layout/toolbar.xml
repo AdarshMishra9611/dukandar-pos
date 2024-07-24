@@ -35,11 +35,11 @@
     <!-- Cart Icon -->
     <ImageView
         android:id="@+id/cart_icon"
-        android:layout_width="@dimen/dim_30"
-        android:layout_height="@dimen/dim_30"
-        android:paddingEnd="@dimen/dim_10"
+        android:layout_width="@dimen/dim_32"
+        android:layout_height="@dimen/dim_32"
         android:src="@drawable/cart"
         android:layout_gravity="end"
+        android:layout_marginRight="@dimen/dim_10"
 
         />
 
