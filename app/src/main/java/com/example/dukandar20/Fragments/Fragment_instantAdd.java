@@ -1,4 +1,4 @@
-package com.example.dukandar20;
+package com.example.dukandar20.Fragments;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.example.dukandar20.adapter.DataBaseHelper;
-import com.example.dukandar20.adapter.cart_model;
+import com.example.dukandar20.DataBaseHelper;
+import com.example.dukandar20.R;
+import com.example.dukandar20.models.cart_model;
 
 /**
  * A simple {@link Fragment} subclass.

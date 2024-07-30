@@ -18,16 +18,19 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.R;
+import com.example.dukandar20.models.Item_model;
+import com.example.dukandar20.models.cart_model;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_RecyclerViewAdapter.ViewHolder> {
    private Context mcontext ;
    private ArrayList<Item_model> dataSet;
    private boolean incDceButtonClicked = false;
    DataBaseHelper myDB;
+
 
 
 
@@ -77,8 +80,7 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
             item.productQuantity = currentQuantity;
             holder.productQuantity.setText(String.valueOf(currentQuantity));
 
-            cart_model cartModel = new cart_model(item.item_name, item.item_price, item.productQuantity);
-            insert(cartModel);
+
 
 
         });
@@ -99,9 +101,7 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
             item.productQuantity = currentQuantity;
             holder.productQuantity.setText(String.valueOf(currentQuantity));
 
-            //to update
 
-            insert( new cart_model(item.item_name, item.item_price, item.productQuantity));
 
         });
 
@@ -124,6 +124,12 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
                     try {
                         int quantity = Integer.parseInt(editable.toString());
                         item.productQuantity = quantity;
+
+                        if(quantity == 0){
+                            myDB.removeItemFromCart(item.item_name);
+                        }else {
+                            insert( new cart_model(item.item_name, item.item_price, item.productQuantity));
+                        }
 
                     } catch (NumberFormatException e) {
                         item.productQuantity = 0; // Set default value if parsing fails

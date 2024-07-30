@@ -1,4 +1,4 @@
-package com.example.dukandar20;
+package com.example.dukandar20.Fragments;
 
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,10 +15,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.dukandar20.adapter.DataBaseHelper;
+import com.example.dukandar20.DataBaseHelper;
+import com.example.dukandar20.Fragments.Fragment_Add_Item;
+import com.example.dukandar20.Item_Activity;
+import com.example.dukandar20.R;
 import com.example.dukandar20.adapter.Item_RecyclerViewAdapter;
-import com.example.dukandar20.adapter.Item_model;
-import com.example.dukandar20.adapter.cart_model;
+import com.example.dukandar20.models.Item_model;
+import com.example.dukandar20.models.cart_model;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;

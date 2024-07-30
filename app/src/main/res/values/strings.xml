@@ -21,6 +21,10 @@
     <string name="name">Name</string>
     <string name="price">Price</string>
     <string name="enter_customer_name">Enter Customer Name</string>
+    <string name="sales">SALES</string>
+    <string name="balance">BALANCE</string>
+    <string name="counter">COUNTER</string>
+    <string name="item">ITEM</string>
 
 
 </resources>

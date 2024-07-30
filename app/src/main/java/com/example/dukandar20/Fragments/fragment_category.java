@@ -1,12 +1,12 @@
-package com.example.dukandar20;
+package com.example.dukandar20.Fragments;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,9 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
-import com.example.dukandar20.adapter.DataBaseHelper;
+import com.example.dukandar20.DataBaseHelper;
+import com.example.dukandar20.MainActivity;
+import com.example.dukandar20.R;
 import com.example.dukandar20.adapter.RecylerViewAdapter;
+import com.example.dukandar20.add_category;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -34,6 +38,7 @@ public class fragment_category extends Fragment {
     ArrayList<String> cat_id;
     ArrayList<Bitmap> cat_image;
     RecylerViewAdapter adapter;
+
     DataBaseHelper myDB;
 
     public fragment_category() {
@@ -51,6 +56,7 @@ public class fragment_category extends Fragment {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,8 +66,11 @@ public class fragment_category extends Fragment {
 
 
         FloatingActionButton add_cat_floting_button  = view.findViewById(R.id.add_cat_floatingActionButton);
-        TextView title = view.findViewById(R.id.category_title);
+
         RecyclerView recyclerView = view.findViewById(R.id.category_recyclerView);
+
+
+
 
         myDB = new DataBaseHelper(getContext());
 
@@ -78,12 +87,12 @@ public class fragment_category extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
-        add_cat_floting_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity) getActivity()).replace_fragment(new add_category());
-            }
-        });
+//        add_cat_floting_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                ((MainActivity) getActivity()).replace_fragment(new add_category());
+//            }
+//        });
 
         return  view;
     }

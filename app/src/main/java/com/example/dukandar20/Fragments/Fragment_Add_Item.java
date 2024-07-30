@@ -1,4 +1,4 @@
-package com.example.dukandar20;
+package com.example.dukandar20.Fragments;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -15,11 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EdgeEffect;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.example.dukandar20.adapter.DataBaseHelper;
+import com.example.dukandar20.DataBaseHelper;
+import com.example.dukandar20.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
 import java.io.ByteArrayOutputStream;

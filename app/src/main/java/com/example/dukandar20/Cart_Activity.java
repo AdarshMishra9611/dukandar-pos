@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.GestureDetector;
-import android.view.contentcapture.DataRemovalRequest;
 import android.widget.FrameLayout;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -13,7 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.material.tabs.TabLayout;
+import com.example.dukandar20.Fragments.FragmentCart;
+import com.example.dukandar20.Fragments.Fragment_instantAdd;
 
 public class Cart_Activity extends AppCompatActivity {
 
@@ -51,7 +51,7 @@ public class Cart_Activity extends AppCompatActivity {
 
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(R.id.cartFramlayout,new Fragment_cart());
+        ft.replace(R.id.cartFramlayout,new Fragment_instantAdd());
         ft.commit();
 
 

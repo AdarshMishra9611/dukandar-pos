@@ -7,8 +7,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.dukandar20.adapter.DataBaseHelper;
-import com.example.dukandar20.adapter.Item_RecyclerViewAdapter;
-import com.example.dukandar20.adapter.Item_model;
-import com.example.dukandar20.adapter.cart_model;
+import com.example.dukandar20.Fragments.Fragment_item;
+import com.example.dukandar20.models.cart_model;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;

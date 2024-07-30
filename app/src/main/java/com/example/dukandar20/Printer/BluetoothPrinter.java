@@ -1,11 +1,11 @@
 package com.example.dukandar20.Printer;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,8 +15,13 @@ import androidx.core.content.ContextCompat;
 import com.dantsu.escposprinter.EscPosPrinter;
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothConnection;
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothPrintersConnections;
-import com.dantsu.escposprinter.textparser.PrinterTextParserImg;
-import com.example.dukandar20.R;
+import com.example.dukandar20.models.cart_model;
+
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class BluetoothPrinter {
 
@@ -66,44 +71,20 @@ public class BluetoothPrinter {
         return false;
     }
 
-    public void doPrint() {
+    public void doPrint(ArrayList<cart_model> dataset) {
         checkPermissions();
 
         try {
             if (connectToPrinter()) {
                 EscPosPrinter printer = new EscPosPrinter(connection, 203, 48f, 32);
-                printer.printFormattedText(
-                        "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, context.getResources().getDrawableForDensity(R.drawable.a, DisplayMetrics.DENSITY_MEDIUM)) + "</img>\n" +
-                                "[L]\n" +
-                                "[C]<u><font size='big'>ORDER N°045</font></u>\n" +
-                                "[L]\n" +
-                                "[C]================================\n" +
-                                "[L]\n" +
-                                "[L]<b>BEAUTIFUL SHIRT</b>[R]9.99e\n" +
-                                "[L]  + Size : S\n" +
-                                "[L]\n" +
-                                "[L]<b>AWESOME HAT</b>[R]24.99e\n" +
-                                "[L]  + Size : 57/58\n" +
-                                "[L]\n" +
-                                "[C]--------------------------------\n" +
-                                "[R]TOTAL PRICE :[R]34.98e\n" +
-                                "[R]TAX :[R]4.23e\n" +
-                                "[L]\n" +
-                                "[C]================================\n" +
-                                "[L]\n" +
-                                "[L]<font size='tall'>Customer :</font>\n" +
-                                "[L]Raymond DUPONT\n" +
-                                "[L]5 rue des girafes\n" +
-                                "[L]31547 PERPETES\n" +
-                                "[L]Tel : +33801201456\n" +
-                                "[L]\n" +
-                                "[C]<barcode type='ean13' height='10'>831254784551</barcode>\n" +
-                                "[C]<qrcode size='20'>https://dantsu.com/</qrcode>"
-                );
+                String receipt = generateReceipt(dataset,"1","Adarsh","8867510457");
+                printer.printFormattedText(receipt);
+
+                // Send ESC/POS command to cut the paper
+                connection.write(new byte[]{0x1D, 'V', 1});
 
                 connection.disconnect();
                 connection = null;
-
                 Toast.makeText(context, "Print successful", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(context, "Printer connection failed.", Toast.LENGTH_SHORT).show();
@@ -114,4 +95,63 @@ public class BluetoothPrinter {
             Log.e("BluetoothPrinter", "Can't print: " + e.getMessage(), e);
         }
     }
+
+
+    @SuppressLint("DefaultLocale")
+    public String generateReceipt(ArrayList<cart_model> dataset, String orderNumber, String customerName, String customerPhone) {
+        StringBuilder receipt = new StringBuilder();
+
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yy hh:mm");
+        String currentDate = sdf.format(new Date());
+
+        // Receipt Header with Order Number
+        receipt.append(String.format("[L]Bill No:%s<b> [R]%s</b>\n",orderNumber,currentDate));
+//        receipt.append("[L]\n");
+        receipt.append("[L]--------------------------------\n");
+
+
+        // Header for Item details
+        receipt.append("<b>Item         Rate   Qty   Amount</b>\n");
+        receipt.append("--------------------------------\n");
+
+        // Items List
+        double totalPrice = 0.1;
+        for (cart_model item : dataset) {
+            @SuppressLint("DefaultLocale")
+            String formattedItem = String.format("%-10s %6.2f %3d %8.2f\n",
+                    item.productName,
+                    (double)item.productPrice,
+                    item.productQuantity,
+                    item.productPrice * (double)item.productQuantity);
+            receipt.append(formattedItem);
+            totalPrice += item.productPrice * item.productQuantity;
+        }
+
+        // Total and Tax
+        // Example tax calculation (12%)
+        receipt.append("--------------------------------\n");
+        // format total amount
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "IN"));
+        String formattedTotalPrice = numberFormat.format(totalPrice);
+
+
+        receipt.append(String.format("[L]Total:[R]<font size='wide'>%s</font>\n", formattedTotalPrice));
+//        receipt.append(String.format("Tax:                    %6.2f\n", tax));
+
+        receipt.append("[C]================================\n");
+//        receipt.append("[L]\n");
+
+        // Customer Details
+        receipt.append("[L]<font size='normal'>Customer :</font>");
+        receipt.append("[L]<font size='wide'>").append(customerName).append("</font>\n");
+        receipt.append("[L]").append("Tel : ").append(customerPhone);
+
+
+        // QR Code
+//        receipt.append("[C]<qrcode size='20'>https://dantsu.com/</qrcode>");
+
+        // Return the formatted receipt as a string
+        return receipt.toString();
+    }
+
 }

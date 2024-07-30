@@ -1,7 +1,6 @@
 package com.example.dukandar20.adapter;
 
 import android.content.Context;
-import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -16,7 +15,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.R;
+import com.example.dukandar20.models.cart_model;
 
 import java.util.ArrayList;
 
@@ -58,8 +59,8 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
             curreentQuantity++;
             item.productQuantity = curreentQuantity;
             holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
+            holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
 
-            insert( new cart_model(item.productName,item.productPrice,item.productQuantity));
 
 
             if (onCartItemChangeListener != null) {
@@ -78,14 +79,14 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
 
             item.productQuantity = currentQuantity;
             holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
-            insert( new cart_model(item.productName,item.productPrice,item.productQuantity));
+
             if(currentQuantity == 0){
                 myDB.removeItemFromCart(item.productName);
                 dataset.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, dataset.size());
             }
-
+            holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
             if (onCartItemChangeListener != null) {
                 onCartItemChangeListener.onCartItemChange();
             }
@@ -99,7 +100,7 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, dataset.size());
 
-
+            holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
             if (onCartItemChangeListener != null) {
                 onCartItemChangeListener.onCartItemChange();
             }
@@ -118,17 +119,23 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
                 if (!charSequence.toString().isEmpty()) {
-                    int quantity = Integer.parseInt(charSequence.toString());
-                    item.productQuantity = quantity;
-                    if (onCartItemChangeListener != null) {
-                        onCartItemChangeListener.onCartItemChange();
+                    int newquantity = Integer.parseInt(charSequence.toString());
+                    if(item.productQuantity != newquantity){
+                        item.productQuantity = newquantity;
+                        insert( new cart_model(item.productName,item.productPrice,item.productQuantity));
+                        holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
+                        if (onCartItemChangeListener != null) {
+                            onCartItemChangeListener.onCartItemChange();
+                        }
                     }
+
                 }
 
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+
 
             }
         });

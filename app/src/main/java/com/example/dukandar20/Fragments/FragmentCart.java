@@ -1,6 +1,7 @@
-package com.example.dukandar20;
+package com.example.dukandar20.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,10 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.example.dukandar20.Cart_Activity;
+import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.Printer.BluetoothPrinter;
+import com.example.dukandar20.R;
 import com.example.dukandar20.adapter.Cart_Adapter;
-import com.example.dukandar20.adapter.DataBaseHelper;
-import com.example.dukandar20.adapter.cart_model;
+import com.example.dukandar20.models.cart_model;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -26,10 +29,10 @@ import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_cart#newInstance} factory method to
+ * Use the {@link FragmentCart#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment_cart extends Fragment {
+public class FragmentCart extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,7 +52,7 @@ public class Fragment_cart extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public Fragment_cart() {
+    public FragmentCart() {
         // Required empty public constructor
     }
 
@@ -62,8 +65,8 @@ public class Fragment_cart extends Fragment {
      * @return A new instance of fragment Fragment_cart.
      */
     // TODO: Rename and change types and number of parameters
-    public static Fragment_cart newInstance(String param1, String param2) {
-        Fragment_cart fragment = new Fragment_cart();
+    public static FragmentCart newInstance(String param1, String param2) {
+        FragmentCart fragment = new FragmentCart();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -79,8 +82,16 @@ public class Fragment_cart extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
 
-    @SuppressLint("MissingInflatedId")
+        cartData(); // Reload data
+        adapter.notifyDataSetChanged(); // Notify adapter about data change
+        total.setText(String.valueOf("Total ₹" + totalAmount(dataset))); // Update total
+    }
+
+    @SuppressLint({"MissingInflatedId", "CutPasteId"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -102,29 +113,19 @@ public class Fragment_cart extends Fragment {
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((Cart_Activity) getActivity()).replace_cart_fragment(new Fragment_checkOut());
+                ((Cart_Activity) getActivity()).replace_cart_fragment(new Fragment_checkOut(totalAmount(dataset),dataset));
             }
         });
 
         instantAdd.setOnClickListener(view1 -> {
-            ((Cart_Activity) getActivity()).replace_cart_fragment(new Fragment_instantAdd());
+            Intent intent = new Intent(getContext(),Cart_Activity.class);
+            startActivity(intent);
         });
 
         total.setText(String.valueOf( "Total ₹"+totalAmount(dataset) ));
 
 
 
-
-
-
-//        dataset.add(new cart_model("product1",1,45));
-//        dataset.add(new cart_model("product2",1,45));
-//        dataset.add(new cart_model("product3",1,45));
-//        dataset.add(new cart_model("product4",1,45));
-//        dataset.add(new cart_model("product5",1,45));
-//        dataset.add(new cart_model("product6",1,45));
-//        dataset.add(new cart_model("product7",1,45));
-//        dataset.add(new cart_model("product8",1,45));
 
 
         adapter = new Cart_Adapter(getContext(),dataset,this::onCartItemChange);
@@ -139,31 +140,31 @@ public class Fragment_cart extends Fragment {
 
     public void onCartItemChange() {
         total.setText(String.valueOf("Total ₹"+totalAmount(dataset)));
+
     }
-    private  void cartData(){
+    private void cartData() {
+        dataset.clear();
         Cursor cursor = myDB.readCartData();
 
-        if (cursor.getCount() == 0){
-            Toast.makeText(this.getContext(),"cart is empty",Toast.LENGTH_SHORT).show();
-        }else {
-            while (cursor.moveToNext()){
+        if (cursor.getCount() == 0) {
+            Toast.makeText(this.getContext(), "Cart is empty", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
                 String productName = cursor.getString(1);
                 int productPrice = cursor.getInt(2);
-                int prductQuantity = cursor.getInt(3);
+                int productQuantity = cursor.getInt(3);
 
-                dataset.add(new cart_model(productName,productPrice,prductQuantity));
+                dataset.add(new cart_model(productName, productPrice, productQuantity));
             }
         }
-
-
-
-
+        cursor.close(); // Close cursor after use
     }
-    private int totalAmount(ArrayList<cart_model> dataset){
-        int totalAmount =0;
+
+    private double totalAmount(ArrayList<cart_model> dataset){
+        double totalAmount =0;
         for (int i = 0; i<dataset.size();i++){
             cart_model item = dataset.get(i);;
-            int total =(item.productPrice*item.productQuantity);
+            double total =(item.productPrice*item.productQuantity);
             totalAmount+=total;
         }
 

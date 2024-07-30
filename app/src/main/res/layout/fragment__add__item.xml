@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lightGreen"
-    tools:context=".Fragment_Add_Item">
+    tools:context=".Fragments.Fragment_Add_Item">
 
     <!-- EditText for category input -->
 
@@ -38,7 +38,7 @@
         android:background="@drawable/edit_text_background"
         android:elevation="4dp"
         android:hint="Enter Price"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:padding="16dp"
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"

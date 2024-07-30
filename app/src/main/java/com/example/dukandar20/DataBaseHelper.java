@@ -1,4 +1,4 @@
-package com.example.dukandar20.adapter;
+package com.example.dukandar20;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +10,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.example.dukandar20.models.BillItem;
+import com.example.dukandar20.models.cart_model;
 
 import java.util.ArrayList;
 
@@ -67,7 +70,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String BILL_ITEM_TABLE_NAME = "BillItem";
     public static final String BILL_ITEM_ID = "BillItemID";
     public static final String BILL_ITEM_BILL_ID = "BillID";
-    public static final String BILL_ITEM_ITM_ID = "ItemID";
+    public static final String BILL_ITEM_ITM_ID = "ItemName";
     public static final String BILL_ITEM_QUANTITY = "Quantity";
     public static final String BILL_ITEM_PRICE = "Price";
 
@@ -127,7 +130,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 PRODUCT_QUANTITY + " INTEGER NOT NULL" +
                 ");";
 
-
+// Queary to create Bill Table
         String createBillTableQuery = "CREATE TABLE " + BILL_TABLE_NAME + " (" +
                 BILL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 BILL_CUSTOMER_ID + " INTEGER, " +
@@ -142,7 +145,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String createBillItemTableQuery = "CREATE TABLE " + BILL_ITEM_TABLE_NAME + " (" +
                 BILL_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 BILL_ITEM_BILL_ID + " INTEGER, " +
-                BILL_ITEM_ITM_ID + " INTEGER, " +
+                BILL_ITEM_ITM_ID + " TEXT, " +
                 BILL_ITEM_QUANTITY + " INTEGER, " +
                 BILL_ITEM_PRICE + " REAL, " +
                 "FOREIGN KEY(" + BILL_ITEM_BILL_ID + ") REFERENCES " + BILL_TABLE_NAME + "(" + BILL_ID + "), " +
@@ -369,6 +372,48 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
+// Insert into bills
+
+    public long insertBill(int customerId, String billDate, double totalAmount, String status, String paymentMethod) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(BILL_CUSTOMER_ID, customerId);
+        cv.put(BILL_DATE, billDate);
+        cv.put(BILL_TOTAL_AMOUNT, totalAmount);
+        cv.put(BILL_STATUS, status);
+        cv.put(BILL_PAYMENT_METHOD, paymentMethod);
+
+        long result = db.insert(BILL_TABLE_NAME, null, cv);
+        if (result == -1) {
+            Toast.makeText(context, "Failed to insert bill", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Bill inserted successfully", Toast.LENGTH_SHORT).show();
+        }
+        return result; // Returning the BillID for reference
+    }
+
+
+// insert into bill item
+
+    public void insertBillItems(long billId, ArrayList<cart_model> billItems) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv;
+
+        for (cart_model item : billItems) {
+            cv = new ContentValues();
+            cv.put(BILL_ITEM_BILL_ID, billId);
+            cv.put(BILL_ITEM_ITM_ID, item.productName);
+            cv.put(BILL_ITEM_QUANTITY, item.productQuantity);
+            cv.put(BILL_ITEM_PRICE, item.productPrice);
+
+            long result = db.insert(BILL_ITEM_TABLE_NAME, null, cv);
+            if (result == -1) {
+                Toast.makeText(context, "Failed to insert bill item: " + item.productName, Toast.LENGTH_SHORT).show();
+            }
+        }
+        Toast.makeText(context, "Bill items inserted successfully", Toast.LENGTH_SHORT).show();
+    }
 
 
 

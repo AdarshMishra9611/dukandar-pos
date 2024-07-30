@@ -1,11 +1,11 @@
-package com.example.dukandar20.adapter;
+package com.example.dukandar20.models;
 
 public class cart_model {
-    String productName;
+    public String productName;
     public int productQuantity;
-    public int productPrice;
+    public double productPrice;
 
-    public cart_model(String productName, int productPrice, int productQuantity ) {
+    public cart_model(String productName, double productPrice, int productQuantity ) {
         this.productName = productName;
         this.productPrice = productPrice;
         this.productQuantity = productQuantity;

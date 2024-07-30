@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.example.dukandar20.adapter.DataBaseHelper;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
 import java.io.ByteArrayOutputStream;

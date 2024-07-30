@@ -7,7 +7,7 @@
     android:id="@+id/category_drawerLayout"
     android:layout_gravity="start"
 
-    tools:openDrawer="start"
+    tools:openDrawer=""
 
     tools:context=".MainActivity">
 
@@ -22,12 +22,22 @@
         <include android:id="@+id/toolbar" layout="@layout/toolbar"/>
 
 
-        <FrameLayout
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/container">
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        </FrameLayout>
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_Nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/emeraldGreen"
+            app:menu="@menu/bottom_menu"
+            />
+
 
 
 
