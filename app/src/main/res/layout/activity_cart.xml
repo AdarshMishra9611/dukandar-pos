@@ -8,7 +8,7 @@
     android:layout_gravity="start"
 
     tools:openDrawer="start"
-    tools:context=".Cart_Activity">
+    tools:context=".add_Activity">
 
     <include
         layout="@layout/drawaerlayout"/>

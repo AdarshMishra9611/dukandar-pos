@@ -92,6 +92,9 @@ public class Fragment_instantAdd extends Fragment {
 
                );
                myDB.addItemsToCart(cart_model);
+               if (getActivity() != null) {
+                   getActivity().finish();
+               }
            }
        });
 

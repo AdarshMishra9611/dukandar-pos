@@ -3,5 +3,6 @@
     <style name="Base.Theme.Dukandar20" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorControlNormal">@color/emeraldGreen</item>
     </style>
 </resources>

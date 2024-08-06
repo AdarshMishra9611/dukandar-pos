@@ -135,7 +135,7 @@ public class BluetoothPrinter {
         String formattedTotalPrice = numberFormat.format(totalPrice);
 
 
-        receipt.append(String.format("[L]Total:[R]<font size='wide'>%s</font>\n", formattedTotalPrice));
+        receipt.append(String.format("[L]<b>Total:[R]<font size='wide'>%s</font></b>\n", formattedTotalPrice));
 //        receipt.append(String.format("Tax:                    %6.2f\n", tax));
 
         receipt.append("[C]================================\n");

@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +41,7 @@ public class Fragment_item extends Fragment {
     ArrayList<Item_model> dataset;
     DataBaseHelper myDB;
     RecyclerView recyclerView;
+    Item_RecyclerViewAdapter adapter;
     String cat_id  ;
     private  ArrayList<cart_model> addTOCart;
 
@@ -75,6 +78,13 @@ public class Fragment_item extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        getItemData();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -84,7 +94,7 @@ public class Fragment_item extends Fragment {
         View view =    inflater.inflate(R.layout.fragment_item, container, false);
 
         //find view
-        TextView title = view.findViewById(R.id.item_title);
+//        TextView title = view.findViewById(R.id.item_title);
         recyclerView = view.findViewById(R.id.item_recyclerView);
         FloatingActionButton ft_button = view.findViewById(R.id.add_item_floatingActionButton);
 
@@ -106,20 +116,11 @@ public class Fragment_item extends Fragment {
 
         getItemData();
 
-//        dataset = new ArrayList<>();
-//        dataset.add(new Item_model(R.drawable.a,"item1",10));
-//        dataset.add(new Item_model(R.drawable.b,"item2",45));
-//        dataset.add(new Item_model(R.drawable.c,"item3",69));
-//        dataset.add(new Item_model(R.drawable.d,"item4", 45));
-//
-//        dataset.add(new Item_model(R.drawable.b,"item5",45));
-//        dataset.add(new Item_model(R.drawable.c,"item6",69));
-//        dataset.add(new Item_model(R.drawable.d,"item7", 45));
-//        dataset.add(new Item_model(R.drawable.e,"Item8",78));
 
 
-        Item_RecyclerViewAdapter adapter = new Item_RecyclerViewAdapter(getContext(),dataset);
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(),3);
+        int spanCount = calculateNumberOfColumns();
+        adapter = new Item_RecyclerViewAdapter(getContext(),dataset,getActivity());
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(),spanCount);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
@@ -135,15 +136,19 @@ public class Fragment_item extends Fragment {
     }
 
     private  void   getItemData(){
+        dataset.clear();
         Cursor cursor = myDB.readItemData(Integer.parseInt(cat_id));
         if (cursor.getCount() == 0){
             Toast.makeText(this.getContext(),"No Item in Category Avilable",Toast.LENGTH_SHORT).show();
         }else {
             while (cursor.moveToNext()){
+                int itemId = cursor.getInt(0);
+
+                int cat_id = cursor.getInt(3);
                 byte[] iImage = cursor.getBlob(4);
                 String iName = cursor.getString(1);
                 int iPrice = cursor.getInt(2);
-                dataset.add(new Item_model(convertByteArrayToBitmap(iImage),iName,iPrice,0));
+                dataset.add(new Item_model(itemId,cat_id,  convertByteArrayToBitmap(iImage),iName,iPrice,0));
             }
         }
 
@@ -153,7 +158,13 @@ public class Fragment_item extends Fragment {
         return BitmapFactory.decodeByteArray(iImage,0,iImage.length);
     }
 
-    // Method to handle back press
+    private int calculateNumberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+        int itemWidth = getResources().getDimensionPixelSize(R.dimen.grid_item_width); // Define your item width in dimens.xml
+        return screenWidth / itemWidth;
+    }
 
 
 

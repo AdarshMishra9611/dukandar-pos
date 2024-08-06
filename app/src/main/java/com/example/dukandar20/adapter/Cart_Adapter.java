@@ -28,20 +28,18 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
     OnCartItemChangeListener onCartItemChangeListener;
     DataBaseHelper myDB;
 
-    public Cart_Adapter(Context context, ArrayList<cart_model> dataset,OnCartItemChangeListener onCartItemChangeListener){
+    public Cart_Adapter(Context context, ArrayList<cart_model> dataset, OnCartItemChangeListener onCartItemChangeListener) {
         this.context = context;
         this.dataset = dataset;
         this.onCartItemChangeListener = onCartItemChangeListener;
+        this.myDB = new DataBaseHelper(context); // Initialize DB here
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View view   =    LayoutInflater.from(context).inflate(R.layout.cart_cardlayout,parent,false);
-        ViewHolder viewHolder = new ViewHolder(view);
-
-        return viewHolder;
+        View view = LayoutInflater.from(context).inflate(R.layout.cart_cardlayout, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -49,103 +47,69 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
         cart_model item = dataset.get(position);
 
         holder.productName.setText(item.productName);
-        holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
-        holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
+        holder.productPrice.setText("₹" + (item.productPrice * item.productQuantity));
+        holder.productQuantity.setText(String.valueOf(item.productQuantity));
 
-        //Increase button
+        // Remove any previous listeners from EditText
+        holder.productQuantity.setOnFocusChangeListener(null);
 
+        // Set OnFocusChangeListener to update quantity
+        holder.productQuantity.setOnFocusChangeListener((view, hasFocus) -> {
+            if (!hasFocus) { // When EditText loses focus
+                if (!holder.productQuantity.getText().toString().isEmpty()) {
+                    try {
+                        int newQuantity = Integer.parseInt(holder.productQuantity.getText().toString());
+                        if (item.productQuantity != newQuantity) {
+                            item.productQuantity = newQuantity;
+                            updateQuantity(holder, item);
+                        }
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        // Increase button
         holder.buttonIncrease.setOnClickListener(view -> {
-            int curreentQuantity = item.productQuantity;
-            curreentQuantity++;
-            item.productQuantity = curreentQuantity;
-            holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
-            holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
-
-
-
-            if (onCartItemChangeListener != null) {
-                onCartItemChangeListener.onCartItemChange();
-            }
-
-
+            item.productQuantity++;
+            updateQuantity(holder, item);
         });
-        // decrease button
+
+        // Decrease button
         holder.buttonDecrease.setOnClickListener(view -> {
-            int currentQuantity = item.productQuantity;
-            if (currentQuantity >0)
-                currentQuantity--;
-
-
-
-            item.productQuantity = currentQuantity;
-            holder.productQuantity.setText(new String(String.valueOf(item.productQuantity)));
-
-            if(currentQuantity == 0){
-                myDB.removeItemFromCart(item.productName);
-                dataset.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, dataset.size());
-            }
-            holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
-            if (onCartItemChangeListener != null) {
-                onCartItemChangeListener.onCartItemChange();
+            if (item.productQuantity > 0) {
+                item.productQuantity--;
+                if (item.productQuantity == 0) {
+                    myDB.removeItemFromCart(item.productName);
+                    dataset.remove(position);
+                    notifyItemRemoved(position);
+                    notifyItemRangeChanged(position, dataset.size());
+                } else {
+                    updateQuantity(holder, item);
+                }
             }
         });
 
-
-        holder.deleteButton.setOnClickListener(view ->{
-            myDB = new DataBaseHelper(context);
+        // Delete button
+        holder.deleteButton.setOnClickListener(view -> {
             myDB.removeItemFromCart(item.productName);
             dataset.remove(position);
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, dataset.size());
-
-            holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
             if (onCartItemChangeListener != null) {
                 onCartItemChangeListener.onCartItemChange();
             }
-
         });
+    }
 
-        // if edit text is changed manully
-
-
-        holder.productQuantity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int after) {
-                if (!charSequence.toString().isEmpty()) {
-                    int newquantity = Integer.parseInt(charSequence.toString());
-                    if(item.productQuantity != newquantity){
-                        item.productQuantity = newquantity;
-                        insert( new cart_model(item.productName,item.productPrice,item.productQuantity));
-                        holder.productPrice.setText(new String(String.valueOf( "₹"+item.productPrice * item.productQuantity)));
-                        if (onCartItemChangeListener != null) {
-                            onCartItemChangeListener.onCartItemChange();
-                        }
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-
-            }
-        });
-
-
-
-
-
-
-
+    private void updateQuantity(ViewHolder holder, cart_model item) {
+        myDB.updateItemQuantity(item); // Update the database
+        holder.productQuantity.setText(String.valueOf(item.productQuantity));
+        holder.productPrice.setText("₹" + (item.productPrice * item.productQuantity));
+        if (onCartItemChangeListener != null) {
+            onCartItemChangeListener.onCartItemChange();
+        }
     }
 
     @Override
@@ -153,42 +117,26 @@ public class Cart_Adapter extends RecyclerView.Adapter<Cart_Adapter.ViewHolder> 
         return dataset.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
-        TextView productName,productPrice;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView productName, productPrice;
         EditText productQuantity;
-        Button buttonIncrease,buttonDecrease;
+        Button buttonIncrease, buttonDecrease;
         ImageButton deleteButton;
         LinearLayout cartcardLayout;
 
-    public ViewHolder(@NonNull View itemView) {
-        super(itemView);
-
-        productName = itemView.findViewById(R.id.textViewProductName);
-        productPrice = itemView.findViewById(R.id.textViewProductPrice);
-        productQuantity = itemView.findViewById(R.id.textViewQuantity);
-        buttonIncrease = itemView.findViewById(R.id.buttonIncrease);
-        buttonDecrease = itemView.findViewById(R.id.buttonDecrease);
-        deleteButton = itemView.findViewById(R.id.buttonDelete);
-        cartcardLayout = itemView.findViewById(R.id.cartcardLayout);
-
-
-
-
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            productName = itemView.findViewById(R.id.textViewProductName);
+            productPrice = itemView.findViewById(R.id.textViewProductPrice);
+            productQuantity = itemView.findViewById(R.id.textViewQuantity);
+            buttonIncrease = itemView.findViewById(R.id.buttonIncrease);
+            buttonDecrease = itemView.findViewById(R.id.buttonDecrease);
+            deleteButton = itemView.findViewById(R.id.buttonDelete);
+            cartcardLayout = itemView.findViewById(R.id.cartcardLayout);
+        }
     }
 
-
-}
     public interface OnCartItemChangeListener {
         void onCartItemChange();
     }
-    private void  insert(cart_model item){
-        myDB = new DataBaseHelper(context);
-
-
-        myDB.addItemsToCart(item);
-    }
-
-
-
-
 }

@@ -1,9 +1,11 @@
-package com.example.dukandar20;
+package com.example.dukandar20.Fragments;
 
 import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,26 +21,29 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.example.dukandar20.DataBaseHelper;
+import com.example.dukandar20.R;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
 import java.io.ByteArrayOutputStream;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link add_category#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class add_category extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 
     private final int IMG_REQ_CODE = 100;
 
     EditText editTextCategory;
-    Button addButton;
+    Button addButton,updateButton;
     ImageView imagePicker;
+    boolean isUpdate = false;
+    int categoryId = -1;
+    String categoryName;
+    Bitmap categoryImageResource;
+    byte[] ByteArray;
+
 
 
 
@@ -47,18 +53,13 @@ public class add_category extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment add_category.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static add_category newInstance(String param1, String param2) {
+    public static add_category newInstance(boolean isUpdate,int categoryId) {
         add_category fragment = new add_category();
         Bundle args = new Bundle();
+        args.putBoolean("isUpdate",isUpdate);
+        args.putInt("categoryId",categoryId);
+
+
 
         fragment.setArguments(args);
         return fragment;
@@ -68,6 +69,13 @@ public class add_category extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            isUpdate = getArguments().getBoolean("isUpdate");
+            categoryId = getArguments().getInt("categoryId");
+//            categoryName = getArguments().getString("categoryName");
+//            ByteArray = getArguments().getByteArray("categoryImageResource");
+//            categoryImageResource =  BitmapFactory.decodeByteArray(ByteArray,0,ByteArray.length);
+
+
 
         }
     }
@@ -81,6 +89,34 @@ public class add_category extends Fragment {
         editTextCategory = view.findViewById(R.id.editTextCategory);
         addButton = view.findViewById(R.id.buttonAddCategory);
         imagePicker = view.findViewById(R.id.categoryImage);
+        updateButton = view.findViewById(R.id.buttonUpdateCategory);
+
+       // set button visibility bsased on operation
+        if (isUpdate){
+            updateButton.setVisibility(View.VISIBLE);
+            addButton.setVisibility(View.GONE);
+            DataBaseHelper myDB = new DataBaseHelper(getContext());
+            Cursor cursor =  myDB.gateCategoryById(categoryId);
+//            Log.v("categoryId", String.valueOf(categoryId));
+            if(cursor != null && cursor.moveToFirst()){
+
+                categoryName = cursor.getString(1);
+//                Log.v("categoryId", categoryName);
+                ByteArray = cursor.getBlob(2);
+                categoryImageResource =  BitmapFactory.decodeByteArray(ByteArray,0,ByteArray.length);
+            }
+            imagePicker.setImageBitmap(categoryImageResource);
+            editTextCategory.setText(categoryName);
+        }else {
+            addButton.setVisibility(View.VISIBLE);
+            updateButton.setVisibility(View.GONE);
+        }
+
+
+
+
+
+
 
         //addButton when pressed
 
@@ -90,6 +126,23 @@ public class add_category extends Fragment {
                 DataBaseHelper mydb = new DataBaseHelper( getContext() );
                 byte[] imageArray = convertToByteArray(imagePicker);
                 mydb.addCategory( editTextCategory.getText().toString().trim(),  imageArray);
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+
+            }
+        });
+
+        // UpdateButton
+        updateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DataBaseHelper myDB = new DataBaseHelper(getContext());
+                byte[] imageArray = convertToByteArray(imagePicker);
+                myDB.updateCategory(categoryId,editTextCategory.getText().toString().trim(),imageArray);
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
             }
         });
 
@@ -135,4 +188,5 @@ public class add_category extends Fragment {
         bitmap.compress(Bitmap.CompressFormat.PNG,70,byteArrayOutputStream);
         return  byteArrayOutputStream.toByteArray();
     }
+
 }

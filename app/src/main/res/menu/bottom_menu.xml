@@ -5,7 +5,8 @@
         android:id="@+id/itSale"
         android:title="@string/sales"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/sales"/>
+        android:icon="@drawable/sales"
+        />
     <item
         android:id="@+id/itBlance"
         android:title="@string/balance"
@@ -19,11 +20,11 @@
     <item
         android:id="@+id/itCategory"
         android:title="@string/category"
-        android:icon="@drawable/category"
+        android:icon="@drawable/item_view"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/itItem"
-        android:title="@string/item"
-        android:icon="@drawable/item_view"
+        android:id="@+id/itMore"
+        android:title="@string/more"
+        android:icon="@drawable/category"
         app:showAsAction="ifRoom"/>
 </menu>

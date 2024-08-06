@@ -3,6 +3,7 @@ package com.example.dukandar20;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -39,7 +40,7 @@ public class Item_Activity extends AppCompatActivity {
 //        getCategoryID();
         //Find view
         toolbar = findViewById(R.id.toolbar_item);
-        textView = findViewById(R.id.item_title);
+//        textView = findViewById(R.id.item_title);
         drawerLayout = findViewById(R.id.item_drawarerLayout);
         cart_icon = findViewById(R.id.cart_icon);
 
@@ -51,15 +52,20 @@ public class Item_Activity extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.OpenDrawer,R.string.ClodeDrawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        toggle.getDrawerArrowDrawable().setColor(ContextCompat.getColor(this, R.color.emeraldGreen));
 
         //cart button pressed
         cart_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Item_Activity.this, Cart_Activity.class);
+                Intent intent = new Intent(Item_Activity.this, add_Activity.class);
                 startActivity(intent);
             }
         });
+
+
+
+
 
 
         replace_Fragment(new Fragment_item(),0);

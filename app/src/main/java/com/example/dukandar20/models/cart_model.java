@@ -1,6 +1,8 @@
 package com.example.dukandar20.models;
 
-public class cart_model {
+import java.io.Serializable;
+
+public class cart_model implements Serializable {
     public String productName;
     public int productQuantity;
     public double productPrice;

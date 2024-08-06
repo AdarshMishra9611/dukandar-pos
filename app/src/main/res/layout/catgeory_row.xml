@@ -16,9 +16,10 @@
     <androidx.cardview.widget.CardView
         android:layout_width="@dimen/dim_115"
         android:layout_height="@dimen/dim_150"
-        app:cardCornerRadius="@dimen/dim_15"
-        app:cardBackgroundColor="@color/emeraldGreen"
-        app:cardElevation="@dimen/dim_4">
+        app:cardBackgroundColor="@color/rowColor"
+
+        app:cardCornerRadius="15dp"
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,27 +27,30 @@
             android:orientation="vertical">
 
             <!-- Image of the category -->
+
+            <!-- Category text -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/categoryImage"
                 android:layout_width="@dimen/dim_100"
                 android:layout_height="@dimen/dim_95"
-                android:layout_marginLeft="@dimen/dim_8"
+                android:layout_marginLeft="@dimen/dim_7"
                 android:layout_marginTop="@dimen/dim_9"
                 android:layout_marginBottom="@dimen/dim_2"
                 android:background="@color/black"
                 android:src="@drawable/cart"
                 app:shapeAppearanceOverlay="@style/roundedImageView" />
 
-            <!-- Category text -->
             <TextView
                 android:id="@+id/categoryText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
+
                 android:text="Category"
                 android:textAlignment="center"
                 android:textColor="@color/smokeyWhite"
                 android:textSize="24sp"
-                android:textStyle="normal"
+                android:textStyle="bold"
                 app:autoSizeTextType="uniform" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>

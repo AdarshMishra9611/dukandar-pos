@@ -1,22 +1,27 @@
 package com.example.dukandar20.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import com.example.dukandar20.Cart_Activity;
+import com.example.dukandar20.MainActivity;
+import com.example.dukandar20.add_Activity;
 import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.Printer.BluetoothPrinter;
 import com.example.dukandar20.R;
@@ -24,6 +29,7 @@ import com.example.dukandar20.adapter.Cart_Adapter;
 import com.example.dukandar20.models.cart_model;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -34,10 +40,12 @@ import java.util.ArrayList;
  */
 public class FragmentCart extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    public interface OnNewOrderClickListener {
+        void onNewOrderClick(int pagenumber);
+    }
+
+    private OnNewOrderClickListener mListener;
+
 
     ArrayList<cart_model> dataset;
     RecyclerView recyclerView;
@@ -45,31 +53,22 @@ public class FragmentCart extends Fragment {
     Button buttonCheckout,checkoutButton;
     FloatingActionButton instantAdd;
     Cart_Adapter adapter;
+    RelativeLayout layoutRecycler,layoutNewOrder;
 
     DataBaseHelper myDB;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
+
 
     public FragmentCart() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_cart.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static FragmentCart newInstance(String param1, String param2) {
         FragmentCart fragment = new FragmentCart();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,18 +77,29 @@ public class FragmentCart extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
     }
     @Override
     public void onResume() {
         super.onResume();
-
+        dataset.clear();
         cartData(); // Reload data
         adapter.notifyDataSetChanged(); // Notify adapter about data change
-        total.setText(String.valueOf("Total ₹" + totalAmount(dataset))); // Update total
+         setVisibility();
+
+        // Update total
     }
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            mListener = (OnNewOrderClickListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement OnNewOrderClickListener");
+        }
+    }
+
 
     @SuppressLint({"MissingInflatedId", "CutPasteId"})
     @Override
@@ -103,22 +113,44 @@ public class FragmentCart extends Fragment {
         buttonCheckout = view.findViewById(R.id.buttonCheckout);
         instantAdd = view.findViewById(R.id.instant_floatingActionButton);
         checkoutButton = view.findViewById(R.id.buttonCheckout);
+        layoutRecycler=view.findViewById(R.id.layoutRecyclearView);
+        layoutNewOrder =view.findViewById(R.id.layoutNewOrder);
 
         //dataset
         myDB = new DataBaseHelper(getContext());
         dataset = new ArrayList<>();
         cartData();
+        setVisibility();
+
 
         BluetoothPrinter printer = new BluetoothPrinter(getContext(),getActivity());
         checkoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((Cart_Activity) getActivity()).replace_cart_fragment(new Fragment_checkOut(totalAmount(dataset),dataset));
+//                ((add_Activity) getActivity()).replace_cart_fragment(new Fragment_checkOut(totalAmount(dataset),dataset));
+                Intent intent= new Intent(getContext(),add_Activity.class);
+                intent.putExtra("FRAGMENT_KEY","PRINT");
+                intent.putExtra("TOTAL",totalAmount(dataset));
+                intent.putExtra("DATASET", (Serializable) dataset);
+                startActivity(intent);
+            }
+        });
+
+        layoutNewOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) {
+                    Log.d("FragmentCart", "New Order Clicked");
+                    mListener.onNewOrderClick(3);
+                } else {
+                    Log.d("FragmentCart", "Listener is null");
+                }
             }
         });
 
         instantAdd.setOnClickListener(view1 -> {
-            Intent intent = new Intent(getContext(),Cart_Activity.class);
+            Intent intent = new Intent(getContext(), add_Activity.class);
+            intent.putExtra("FRAGMENT_KEY","instantAdd");
             startActivity(intent);
         });
 
@@ -170,6 +202,19 @@ public class FragmentCart extends Fragment {
 
         return totalAmount;
     }
+    private void  setVisibility(){
+        if(dataset.size() ==0){
+            layoutRecycler.setVisibility(View.GONE);
+            layoutNewOrder.setVisibility(View.VISIBLE);
+        }else {
+            layoutRecycler.setVisibility(View.VISIBLE);
+            layoutNewOrder.setVisibility(View.GONE);
+        }
+
+    }
+
+
+
 
 
 

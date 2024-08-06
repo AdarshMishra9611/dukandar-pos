@@ -1,10 +1,15 @@
 package com.example.dukandar20.adapter;
 
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +24,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.example.dukandar20.DataBaseHelper;
+import com.example.dukandar20.Fragments.Fragment_Add_Item;
+import com.example.dukandar20.Item_Activity;
 import com.example.dukandar20.R;
+import com.example.dukandar20.add_Activity;
 import com.example.dukandar20.models.Item_model;
 import com.example.dukandar20.models.cart_model;
 
@@ -29,15 +37,17 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
    private Context mcontext ;
    private ArrayList<Item_model> dataSet;
    private boolean incDceButtonClicked = false;
+    private Activity activity;
    DataBaseHelper myDB;
 
 
 
 
 
-    public Item_RecyclerViewAdapter(Context mcontext, ArrayList<Item_model> dataSet) {
+    public Item_RecyclerViewAdapter(Context mcontext, ArrayList<Item_model> dataSet,  Activity activity) {
         this.mcontext = mcontext;
         this.dataSet = dataSet;
+        this.activity = activity;
         this.myDB = new DataBaseHelper(mcontext);
     }
 
@@ -55,6 +65,10 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Item_model item = dataSet.get(position);
+        int getPosition = position;
+        int itemId = item.item_id;
+
+        int cat_id = item.cat_id;
 
 
         holder.item_imageView.setImageBitmap(item.item_image);
@@ -151,6 +165,42 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
             insert( new cart_model(item.item_name, item.item_price, item.productQuantity));
 
         });
+        
+        holder.cardlayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                new AlertDialog.Builder(mcontext)
+                        .setTitle("Item Action")
+                        .setIcon(R.drawable.info_vector_asset)
+                        .setMessage("Are you sure you want to Change this Item?")
+                        .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(activity, add_Activity.class);
+                                intent.putExtra("FRAGMENT_KEY", "updateItem");
+                                intent.putExtra("isUpdate",true);
+                                intent.putExtra("itemId", String.valueOf(itemId));
+//                                Log.v("Apple",String.valueOf(itemId));
+                                intent.putExtra("cat_id",String.valueOf(cat_id));
+                                activity.startActivity(intent);
+
+                            }
+                        })
+                        .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteItem(itemId,getPosition);
+                            }
+                        })
+                        .setNeutralButton("Cancel",null).show();
+
+                return false;
+
+
+
+
+            }
+        });
     }
 
 
@@ -190,6 +240,26 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
 
 
         myDB.addItemsToCart(item);
+    }
+
+    private void deleteItem(int itemId,int getPosition){
+        new AlertDialog.Builder(mcontext)
+                .setTitle("Delete")
+                .setIcon(R.drawable.ic_delete)
+                .setMessage("Are you sure you want to Delete this Item?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        DataBaseHelper myDB = new DataBaseHelper(mcontext);
+                        myDB.deleteItem(itemId);
+                        dataSet.remove(getPosition);
+                        notifyItemRemoved(getPosition);
+                        notifyItemRangeChanged(getPosition,dataSet.size());
+
+                    }
+                })
+                .setNegativeButton("No",null)
+                .show();
     }
 
 

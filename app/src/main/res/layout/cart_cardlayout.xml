@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cartcardLayout"
     android:orientation="vertical">
 
@@ -9,14 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
-        android:elevation="4dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="5dp"
         android:padding="8dp"
-        android:radius="16dp"> <!-- Added corner radius here -->
+        > <!-- Added corner radius here -->
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/emeraldGreen">
+            android:background="@color/rowColor">
 
             <!-- Quantity Controls and Delete Button Container -->
             <LinearLayout
@@ -42,6 +44,7 @@
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:text="@string/minus"
+                        android:textSize="16sp"
                         android:background="@drawable/card_button_background"
                         android:textColor="@android:color/white"
                         android:layout_marginRight="2dp"/>
@@ -64,6 +67,7 @@
                         android:layout_height="32dp"
                         android:background="@drawable/pluse_minus_buttonbackground"
                         android:text="@string/pluse"
+                        android:textSize="16sp"
                         android:layout_marginLeft="2dp"
                         android:textColor="@color/smokeyWhite" />
                 </LinearLayout>
@@ -88,7 +92,7 @@
                 android:layout_marginStart="5dp"
                 android:text="@string/product_name"
                 android:textSize="24sp"
-                android:background="@color/emeraldGreen"
+                android:background="@color/rowColor"
                 android:textColor="@color/smokeyWhite" />
 
             <!-- Product Price -->
@@ -101,7 +105,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/price_0_00"
                 android:textSize="20sp"
-                android:background="@color/emeraldGreen"
+                android:background="@color/rowColor"
                 android:textColor="@color/smokeyWhite" />
 
         </RelativeLayout>

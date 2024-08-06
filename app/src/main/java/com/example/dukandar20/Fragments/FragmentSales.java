@@ -1,15 +1,28 @@
 package com.example.dukandar20.Fragments;
 
+import android.annotation.SuppressLint;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.R;
+import com.example.dukandar20.adapter.SalseRecyclerViewAdapter;
+import com.example.dukandar20.models.salse_item_model;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,35 +30,21 @@ import com.example.dukandar20.R;
  * create an instance of this fragment.
  */
 public class FragmentSales extends Fragment {
-    TextView textView;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    RecyclerView recyclerView;
+    ArrayList<salse_item_model> dataset;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    SalseRecyclerViewAdapter adapter;
+    DataBaseHelper myDB;
     public FragmentSales() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_Sales.
-     */
-    // TODO: Rename and change types and number of parameters
+
     public static FragmentSales newInstance(String param1, String param2) {
         FragmentSales fragment = new FragmentSales();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,9 +53,15 @@ public class FragmentSales extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        populateDataSet();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -64,8 +69,65 @@ public class FragmentSales extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view   = inflater.inflate(R.layout.fragment__sales, container, false);
-        textView = view.findViewById(R.id.salseTextView);
+        recyclerView = view.findViewById(R.id.recyclerViewSalse);
+
+        dataset = new ArrayList<>();
+        myDB = new DataBaseHelper(getContext());
+        populateDataSet();
+
+
+
+
+
+        Log.v("Dataset",String.valueOf(dataset.size()));
+
+        adapter = new SalseRecyclerViewAdapter(getActivity(),dataset);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+
+
+
 
         return view;
     }
+
+    @SuppressLint("SimpleDateFormat")
+    private void populateDataSet() {
+        dataset.clear();
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        String billDate = dateFormat.format(currentDate);
+
+        Cursor cursor = null;
+        try {
+            cursor = myDB.getBillsByDate(billDate);
+
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    int billId = cursor.getInt(0);
+                    int customerId = cursor.getInt(1);
+                    String billDateFromCursor = cursor.getString(2);
+                    double totalBillAmount = cursor.getDouble(3);
+                    String status = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.BILL_STATUS));
+                    String paymentMethod = cursor.getString(cursor.getColumnIndexOrThrow(DataBaseHelper.BILL_PAYMENT_METHOD));
+
+                    salse_item_model item = new salse_item_model(String.valueOf(billId), totalBillAmount, billDateFromCursor);
+                    dataset.add(item);
+
+                } while (cursor.moveToNext());
+            } else {
+                Log.d("FragmentSales", "No bills found for the current date.");
+//                Toast.makeText(getContext(),"No bills found for the current date",Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e("FragmentSales", "Error retrieving bills for the current date", e);
+//            Toast.makeText(getContext(),"Error retrieving bills for the current date "+e,Toast.LENGTH_SHORT).show();
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
 }

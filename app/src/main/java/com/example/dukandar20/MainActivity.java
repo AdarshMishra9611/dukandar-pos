@@ -2,15 +2,15 @@ package com.example.dukandar20;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -19,12 +19,13 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.dukandar20.Fragments.FragmentCart;
 import com.example.dukandar20.adapter.ViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FragmentCart.OnNewOrderClickListener {
 
     Toolbar toolbar, navbar;
     ViewPager2 mainPage;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.OpenDrawer, R.string.ClodeDrawer);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        toggle.getDrawerArrowDrawable().setColor(ContextCompat.getColor(this, R.color.emeraldGreen));
 
         //adapter
         ViewPagerAdapter adapter = new ViewPagerAdapter(this);
@@ -67,9 +69,31 @@ public class MainActivity extends AppCompatActivity {
            @Override
            public void onPageSelected(int position) {
                super.onPageSelected(position);
+               switch (position){
+                   case 0: toolbar_title.setText("SALSE");
+                           bottom_Nav.setSelectedItemId(R.id.itSale);
+                          break;
+                   case 1: toolbar_title.setText("BALANCE");
+                           bottom_Nav.setSelectedItemId(R.id.itBlance);
+                       break;
+
+                   case 2: toolbar_title.setText("DUKANDAR");
+                            bottom_Nav.setSelectedItemId(R.id.itPOV);
+                       break;
+                   case 3: toolbar_title.setText("CATEGORY");
+                           bottom_Nav.setSelectedItemId(R.id.itCategory);
+                       break;
+
+                   case 4: toolbar_title.setText("DUKANDAR");
+                           bottom_Nav.setSelectedItemId(R.id.itMore);
+                       break;
+
+
+               }
 
            }
        });
+
 
 
         // Set OnItemSelectedListener to refresh fragments
@@ -86,11 +110,13 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.itPOV) {
                     mainPage.setCurrentItem(2);
+
                     return true;
                 } else if (itemId == R.id.itCategory) {
                     mainPage.setCurrentItem(3);
+//
                     return true;
-                } else if (itemId == R.id.itItem) {
+                } else if (itemId == R.id.itMore) {
                     mainPage.setCurrentItem(4);
                     return true;
                 } else {
@@ -98,15 +124,46 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        bottom_Nav.setSelectedItemId(R.id.itPOV);
 
         cart_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Cart_Activity.class);
+                Intent intent = new Intent(MainActivity.this, add_Activity.class);
                 startActivity(intent);
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        if (mainPage.getCurrentItem() != 2) {
+            mainPage.setCurrentItem(2);
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit App")
+                    .setIcon(R.drawable.exit_vector_asset)
+                    .setMessage("Are you sure you want to exit?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            MainActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+        }
+    }
 
 
+    //change vipagercurrent element
+
+    public void changeMainPage(int pageNumber){
+        mainPage.setCurrentItem(pageNumber);
+
+    }
+
+
+    @Override
+    public void onNewOrderClick(int pagenumber) {
+        mainPage.setCurrentItem(3);
+    }
 }

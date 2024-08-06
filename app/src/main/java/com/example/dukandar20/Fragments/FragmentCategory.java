@@ -1,6 +1,7 @@
 package com.example.dukandar20.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,24 +11,22 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.dukandar20.DataBaseHelper;
-import com.example.dukandar20.MainActivity;
 import com.example.dukandar20.R;
-import com.example.dukandar20.adapter.RecylerViewAdapter;
-import com.example.dukandar20.add_category;
+import com.example.dukandar20.adapter.CategoryRecylerViewAdapter;
+import com.example.dukandar20.add_Activity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
 
-public class fragment_category extends Fragment {
+public class FragmentCategory extends Fragment {
 
 
 
@@ -37,11 +36,11 @@ public class fragment_category extends Fragment {
     ArrayList<String> cat_name;
     ArrayList<String> cat_id;
     ArrayList<Bitmap> cat_image;
-    RecylerViewAdapter adapter;
+    CategoryRecylerViewAdapter adapter;
 
     DataBaseHelper myDB;
 
-    public fragment_category() {
+    public FragmentCategory() {
         // Required empty public constructor
     }
 
@@ -54,6 +53,13 @@ public class fragment_category extends Fragment {
         if (getArguments() != null) {
 
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        categoryData();
+        adapter.notifyDataSetChanged();
     }
 
     @SuppressLint("MissingInflatedId")
@@ -80,24 +86,30 @@ public class fragment_category extends Fragment {
 
         categoryData();
 
-
-        adapter = new RecylerViewAdapter( cat_id,  cat_name,cat_image,getActivity(),getContext());
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(),3);
+        int spanCount = calculateNumberOfColumns();
+        adapter = new CategoryRecylerViewAdapter( cat_id,  cat_name,cat_image,getActivity(),getContext());
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(),spanCount);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
 
 
-//        add_cat_floting_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                ((MainActivity) getActivity()).replace_fragment(new add_category());
-//            }
-//        });
+        add_cat_floting_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), add_Activity.class);
+                intent.putExtra("FRAGMENT_KEY", "add_category");
+                startActivity(intent);
+
+            }
+        });
 
         return  view;
     }
 
     void  categoryData(){
+        cat_id.clear();
+        cat_name.clear();
+        cat_image.clear();
         Cursor cursor = myDB.readCategoryData();
         if (cursor.getCount() == 0){
             Toast.makeText(this.getContext(),"No Category Avilable",Toast.LENGTH_SHORT).show();
@@ -116,7 +128,16 @@ public class fragment_category extends Fragment {
         }
     }
 
+
     private  Bitmap convertByteArrayToBitmap(byte[] bytes){
         return BitmapFactory.decodeByteArray(bytes,0,bytes.length);
     }
+    private int calculateNumberOfColumns() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+        int itemWidth = getResources().getDimensionPixelSize(R.dimen.grid_item_width); // Define your item width in dimens.xml
+        return screenWidth / itemWidth;
+    }
+
 }

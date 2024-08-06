@@ -1,5 +1,6 @@
 package com.example.dukandar20.Fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,7 +20,9 @@ import com.example.dukandar20.adapter.PaymentModeAdapter;
 import com.example.dukandar20.models.BillItem;
 import com.example.dukandar20.models.cart_model;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Fragment_checkOut extends Fragment {
 
@@ -83,11 +86,18 @@ public class Fragment_checkOut extends Fragment {
 
         myDB = new DataBaseHelper(getContext());
 
+        Date currentDate = new Date();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        String billDate =  dateFormat.format(currentDate);
+
         int customerId =0;
-        String billDate = null;
+
+
         double total= totalAmount ;
         String status = null;
         String paymentMethod = null;
+
+
         long billID = myDB.insertBill(customerId,billDate,total,status,paymentMethod);
 
         myDB.insertBillItems(billID,dataset);

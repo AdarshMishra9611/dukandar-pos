@@ -6,10 +6,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.dukandar20.Fragments.FragmentBalance;
+import com.example.dukandar20.Fragments.FragmentMore;
 import com.example.dukandar20.Fragments.FragmentSales;
 import com.example.dukandar20.Fragments.FragmentCart;
-import com.example.dukandar20.Fragments.fragment_category;
-import com.example.dukandar20.Fragments.Fragment_item;
+import com.example.dukandar20.Fragments.FragmentCategory;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
@@ -33,9 +33,9 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 2:
                 return new FragmentCart();
             case 3:
-                return new fragment_category();
+                return new FragmentCategory();
             case 4:
-                return new fragment_category();
+                return new FragmentMore();
             default:
                 return new FragmentSales();
         }

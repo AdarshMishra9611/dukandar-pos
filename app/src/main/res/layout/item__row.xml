@@ -15,7 +15,8 @@
         android:layout_width="@dimen/dim_115"
         android:layout_height="@dimen/dim_160"
         app:cardCornerRadius="@dimen/dim_15"
-        app:cardBackgroundColor="@color/emeraldGreen">
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/rowColor">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,8 +60,8 @@
                         android:maxLines="1"
                         app:autoSizeTextType="uniform"
                         app:autoSizeMinTextSize="16sp"
-                        app:autoSizeMaxTextSize="24sp"
-                        app:autoSizeStepGranularity="2sp" />
+                        app:autoSizeMaxTextSize="30dp"
+                        app:autoSizeStepGranularity="1sp" />
 
                     <TextView
                         android:id="@+id/item_price"
@@ -74,9 +75,9 @@
                         android:ellipsize="end"
                         android:maxLines="1"
                         app:autoSizeTextType="uniform"
-                        app:autoSizeMinTextSize="19sp"
+                        app:autoSizeMinTextSize="16sp"
                         app:autoSizeMaxTextSize="24sp"
-                        app:autoSizeStepGranularity="2sp" />
+                        app:autoSizeStepGranularity="1sp" />
 
                 </LinearLayout>
 
@@ -86,12 +87,14 @@
                     android:orientation="vertical"
                     android:layout_gravity="end"
                     android:layout_marginRight="10dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:layout_marginBottom="5dp"
+                    >
 
                     <Button
                         android:id="@+id/itembButtonIncrese"
-                        android:layout_width="25dp"
-                        android:layout_height="22dp"
+                        android:layout_width="24dp"
+                        android:layout_height="20dp"
                         android:background="@drawable/card_button_background"
                         android:text="@string/pluse"
                         android:textColor="@android:color/white"
@@ -101,8 +104,8 @@
 
                     <EditText
                         android:id="@+id/item_textViewQuantity"
-                        android:layout_width="25dp"
-                        android:layout_height="22dp"
+                        android:layout_width="24dp"
+                        android:layout_height="20dp"
                         android:gravity="center"
                         android:text="0"
                         android:textSize="16sp"
@@ -114,8 +117,8 @@
 
                     <Button
                         android:id="@+id/itemButtonDecrease"
-                        android:layout_width="25dp"
-                        android:layout_height="22dp"
+                        android:layout_width="24dp"
+                        android:layout_height="20dp"
                         android:text="@string/minus"
                         android:background="@drawable/card_button_background"
                         android:textColor="@color/smokeyWhite"

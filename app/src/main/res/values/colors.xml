@@ -8,4 +8,9 @@
     <color name="lightGreen">#89e48c</color>
     <color name="hunterGreen">#335339</color>
     <color name="orange">#FF5722</color>
+    <color name="lightGray">#F5F5F5</color>
+    <color name="darkGray">#333333</color>
+    <color name="rowColor">#63C268</color>
+    <color name="backgroundColor">#EDEEE9E9</color>
+    <color name="grayBackground">#FAD7D7D7</color>
 </resources>

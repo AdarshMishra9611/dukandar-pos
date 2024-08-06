@@ -1,6 +1,6 @@
 <?xml version ="1.0"?>
 <resources>
-
+    <dimen name="grid_item_width">120dp</dimen>
     <dimen name="dim_0">0dp</dimen>
     <dimen name="dim_1">1dp</dimen>
     <dimen name="dim_2">2dp</dimen>
@@ -501,5 +501,6 @@
     <dimen name="dim_497">497dp</dimen>
     <dimen name="dim_498">498dp</dimen>
     <dimen name="dim_499">499dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

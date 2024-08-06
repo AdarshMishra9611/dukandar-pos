@@ -34,8 +34,12 @@
             android:id="@+id/bottom_Nav"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/emeraldGreen"
+            android:background="@color/white"
             app:menu="@menu/bottom_menu"
+            app:itemIconTint="@color/emeraldGreen"
+            app:itemTextColor="@color/emeraldGreen"
+            android:elevation="5dp"
+
             />
 
 

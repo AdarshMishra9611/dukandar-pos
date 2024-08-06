@@ -72,6 +72,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String BILL_ITEM_BILL_ID = "BillID";
     public static final String BILL_ITEM_ITM_ID = "ItemName";
     public static final String BILL_ITEM_QUANTITY = "Quantity";
+
     public static final String BILL_ITEM_PRICE = "Price";
 
     // CustomerBalance table
@@ -147,6 +148,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 BILL_ITEM_BILL_ID + " INTEGER, " +
                 BILL_ITEM_ITM_ID + " TEXT, " +
                 BILL_ITEM_QUANTITY + " INTEGER, " +
+
                 BILL_ITEM_PRICE + " REAL, " +
                 "FOREIGN KEY(" + BILL_ITEM_BILL_ID + ") REFERENCES " + BILL_TABLE_NAME + "(" + BILL_ID + "), " +
                 "FOREIGN KEY(" + BILL_ITEM_ITM_ID + ") REFERENCES " + ITM_TABLE_NAME + "(" + ITM_ID + ")" +
@@ -230,6 +232,51 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         return cursor;
     }
+//  Delete data from Category
+    public  void  deleteCategory(int cat_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = C_ID+"= ?";
+        String[] whereArgs = {String.valueOf(cat_id)};
+        int result = db.delete(CAT_TABLE_NAME, whereClause, whereArgs);
+
+        // Provide feedback to the user
+        if (result == -1) {
+            Toast.makeText(context, "Failed to delete category", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Category deleted successfully", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+// Update category
+    public void updateCategory(int categoryID,String newCategoryName,byte[] newCategoryImage){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(CAT_NAME,newCategoryName);
+        cv.put(CAT_IMG,newCategoryImage);
+
+        String whereClause = C_ID + "= ?";
+        String[] whereArgs = {String.valueOf(categoryID)};
+        int result = db.update(CAT_TABLE_NAME,cv,whereClause,whereArgs);
+
+        if (result == -1){
+            Toast.makeText(context,"Failed to update category",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context,"Category Update successfully",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+// get a row from category
+    public Cursor gateCategoryById(int categoryId){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " +CAT_TABLE_NAME+" WHERE " + CAT_ID +" = ?";
+        String[] selectionArgs ={String.valueOf(categoryId)};
+
+        return db.rawQuery(query,selectionArgs);
+    }
+
 
 // Insert into item
     public void  addItem(String item_Name,int item_price,int cat_id,byte[] item_img){
@@ -313,6 +360,87 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Toast.makeText(context, "Items processed successfully", Toast.LENGTH_SHORT).show();
     }
 
+    public void updateItemQuantity(@NonNull cart_model item) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Check if the item already exists in the cart
+        String query = "SELECT * FROM " + CART_TABLE_NAME + " WHERE " + PRODUCT_NAME + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{item.productName});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            // Item exists, update the quantity
+            int currentQuantity = cursor.getInt(cursor.getColumnIndexOrThrow(PRODUCT_QUANTITY));
+            int newQuantity = item.productQuantity;
+
+            ContentValues cv = new ContentValues();
+            cv.put(PRODUCT_QUANTITY, newQuantity);
+
+            int result = db.update(CART_TABLE_NAME, cv, PRODUCT_NAME + " = ?", new String[]{item.productName});
+            if (result == -1) {
+                Toast.makeText(context, "Failed to update item quantity in cart: " + item.productName, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Item quantity updated in cart: " + item.productName, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(context, "Item not found in cart: " + item.productName, Toast.LENGTH_SHORT).show();
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
+
+
+
+    // Update item
+   public  void updateItem(int itemId,String newItemName,double newItemPrice,byte[] newItemImage){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(ITM_NAME,newItemName);
+        cv.put(ITM_PRC,newItemPrice);
+        cv.put(ITM_IMG,newItemImage);
+
+        String whereClause = ITM_ID+"= ?";
+        String[] whereArgs = {String.valueOf(itemId)};
+        int result = db.update(ITM_TABLE_NAME,cv,whereClause,whereArgs);
+
+        if(result == -1){
+            Toast.makeText(context,"Failed to update Item",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context,"Category Update successfully",Toast.LENGTH_SHORT).show();
+        }
+   }
+
+
+// Delete Item
+
+  public void deleteItem(int itemId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String whereClause = ITM_ID+"= ?";
+        String[] whereArgs = {String.valueOf(itemId)};
+
+        int result = db.delete(ITM_TABLE_NAME,whereClause,whereArgs);
+
+        if(result == -1){
+            Toast.makeText(context,"Failed to Delete Item",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(context,"Item Deleted successfully",Toast.LENGTH_SHORT).show();
+        }
+  }
+
+
+// get a row from Item
+    public Cursor getItemByitemId(int itremId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM "+ITM_TABLE_NAME+" WHERE "+ITM_ID+" = ?";
+        String[] selectionArgs = {String.valueOf(itremId)};
+
+        Cursor cursor = db.rawQuery(query,selectionArgs);
+        return cursor;
+    }
+
+
 //Read from Cart
     public Cursor readCartData(){
         String queary = "SELECT * FROM "+CART_TABLE_NAME;
@@ -393,6 +521,25 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return result; // Returning the BillID for reference
     }
 
+// fetch bill by date
+
+    public Cursor getBillsByDate(String date){
+
+
+        SQLiteDatabase db = getReadableDatabase();
+        String query = "SELECT * FROM "+ BILL_TABLE_NAME +" WHERE " + BILL_DATE + " = ?";
+
+        Cursor cursor = db.rawQuery(query,new String[]{date});
+        return cursor;
+    }
+//get bill by bill id
+    public Cursor getBillById(long billId){
+        SQLiteDatabase db = getReadableDatabase();
+        String query ="SELECT * FROM "+ BILL_TABLE_NAME + " WHERE "+ BILL_ID + " = ?";
+        Cursor cursor = db.rawQuery(query,new String[]{String.valueOf(billId)});
+        return  cursor;
+    }
+
 
 // insert into bill item
 
@@ -405,6 +552,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
             cv.put(BILL_ITEM_BILL_ID, billId);
             cv.put(BILL_ITEM_ITM_ID, item.productName);
             cv.put(BILL_ITEM_QUANTITY, item.productQuantity);
+
             cv.put(BILL_ITEM_PRICE, item.productPrice);
 
             long result = db.insert(BILL_ITEM_TABLE_NAME, null, cv);
@@ -414,6 +562,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         }
         Toast.makeText(context, "Bill items inserted successfully", Toast.LENGTH_SHORT).show();
     }
+
+
+// get bill item by bill id
+public Cursor getBillItemsByBillId(long billId) {
+    SQLiteDatabase db = this.getReadableDatabase();
+    String query = "SELECT * FROM " + BILL_ITEM_TABLE_NAME + " WHERE " + BILL_ITEM_BILL_ID + " = ?";
+    return db.rawQuery(query, new String[]{String.valueOf(billId)});
+}
 
 
 

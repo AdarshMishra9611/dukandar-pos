@@ -3,7 +3,9 @@ package com.example.dukandar20.Fragments;
 import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,47 +26,38 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 
 import java.io.ByteArrayOutputStream;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Fragment_Add_Item#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class Fragment_Add_Item extends Fragment {
 
 
     EditText editTextItemName,editTextItemPrice;
 
     ImageView item_image;
-    Button buttonAddItem;
+    Button buttonAddItem,buttonUpdateItem;
     String cat_id;
     int IMG_REQ_CODE =100;
+    boolean isUpdate = false;
+    int itemId = -1;
+    String itemName = null;
+    double itemPrice = 0.00;
+    Bitmap itemImageResource;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+
+
+
 
 
     public Fragment_Add_Item() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Fragment_Add_Item.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Fragment_Add_Item newInstance(String param1, String param2) {
+    public static Fragment_Add_Item newInstance(boolean isUpdate, int itemId,String cat_id) {
         Fragment_Add_Item fragment = new Fragment_Add_Item();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBoolean("isUpdate", isUpdate);
+        args.putInt("itemId", itemId);
+        args.putString("cat_id",cat_id);
         fragment.setArguments(args);
         return fragment;
     }
@@ -74,6 +67,9 @@ public class Fragment_Add_Item extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
 
+            isUpdate = getArguments().getBoolean("isUpdate");
+            itemId = getArguments().getInt("itemId");
+            cat_id = getArguments().getString("cat_id");
         }
     }
 
@@ -81,8 +77,7 @@ public class Fragment_Add_Item extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // getting bundel
-         cat_id = getArguments().getString("cat_id");
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment__add__item, container, false);
 
@@ -90,6 +85,33 @@ public class Fragment_Add_Item extends Fragment {
         editTextItemPrice = view.findViewById(R.id.editTextItemPrice);
         item_image = view.findViewById(R.id.itemImage);
         buttonAddItem = view.findViewById(R.id.buttonAddItem);
+        buttonUpdateItem = view.findViewById(R.id.buttonUpdateItem);
+
+
+        if(isUpdate){
+            buttonUpdateItem.setVisibility(View.VISIBLE);
+            buttonAddItem.setVisibility(View.GONE);
+
+            DataBaseHelper myDB = new DataBaseHelper(getContext());
+            Cursor cursor = myDB.getItemByitemId(itemId);
+
+            if (cursor != null && cursor.moveToFirst()) {
+
+                itemName = cursor.getString(1);
+                itemPrice = cursor.getInt(2);
+                byte[] ByteArray = cursor.getBlob(4);
+                itemImageResource = BitmapFactory.decodeByteArray(ByteArray,0,ByteArray.length);
+            }
+
+            editTextItemName.setText(itemName);
+            editTextItemPrice.setText(String.valueOf(itemPrice));
+            item_image.setImageBitmap(itemImageResource);
+
+        }else {
+            buttonAddItem.setVisibility(View.VISIBLE);
+            buttonUpdateItem.setVisibility(View.GONE);
+        }
+
 
 
 
@@ -109,6 +131,25 @@ public class Fragment_Add_Item extends Fragment {
                         ibyteImage
 
                 );
+                getParentFragmentManager().popBackStack();
+            }
+        });
+
+        buttonUpdateItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DataBaseHelper myDB = new DataBaseHelper(getContext());
+                byte[] ibyteImage = convertToByteArray(item_image);
+                myDB.updateItem(
+                        itemId,
+                        editTextItemName.getText().toString().trim(),
+                        Double.parseDouble(editTextItemPrice.getText().toString().trim()),
+                        ibyteImage
+                );
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+
             }
         });
 
