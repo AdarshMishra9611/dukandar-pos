@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="editTextNewCustomerName" type="id" />
+    <item name="editTextNewPhoneNumber" type="id" />
+    <item name="editTextNewCountryCode" type="id" />
+    <item name="buttonAddFromContacts" type="id" />
+</resources>

@@ -9,10 +9,11 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="5dp"
         app:cardCornerRadius="5dp"
         app:cardElevation="5dp"
         android:padding="8dp"
+
         > <!-- Added corner radius here -->
 
         <RelativeLayout

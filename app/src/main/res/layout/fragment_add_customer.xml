@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragments.FragmentAddCustomer">
+
+
+
+<!--    <include layout="@layout/toolbar_add_customer"/>-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        >
+
+
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="242dp"
+            android:layout_margin="8dp"
+            android:layout_marginTop="15dp"
+            app:cardElevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.099">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:layout_editor_absoluteX="-1dp"
+                tools:layout_editor_absoluteY="517dp">
+
+
+                <EditText
+                    android:id="@+id/editTextNewCustomerName"
+                    android:layout_width="327dp"
+                    android:layout_height="wrap_content"
+
+
+                    android:layout_marginTop="12dp"
+                    android:layout_weight="1"
+                    android:hint="Customer Name"
+                    android:inputType="textPersonName"
+                    android:padding="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.529"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextNewPhoneNumber"
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:ignore="MissingConstraints" />
+
+                <EditText
+                    android:id="@+id/editTextNewPhoneNumber"
+                    android:layout_width="255dp"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="56dp"
+                    android:layout_marginEnd="4dp"
+                    android:hint="Phone Number"
+                    android:inputType="phone"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.794"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+                <EditText
+                    android:id="@+id/editTextNewCountryCode"
+                    android:layout_width="54dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="56dp"
+                    android:hint="+91"
+                    android:inputType="phone"
+                    android:padding="10dp"
+                    app:layout_constraintEnd_toStartOf="@+id/editTextNewPhoneNumber"
+                    app:layout_constraintHorizontal_bias="0.666"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="MissingConstraints" />
+
+                <Button
+                    android:id="@+id/buttonAddFromContacts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/emeraldGreen"
+                    android:drawableStart="@drawable/contacts_24"
+                    android:text="@string/contacts"
+                    android:textColor="@color/white"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.456"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/editTextNewCustomerName"
+                    app:layout_constraintVertical_bias="0.528">
+
+                </Button>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

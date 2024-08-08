@@ -81,7 +81,7 @@ public class FragmentSales extends Fragment {
 
         Log.v("Dataset",String.valueOf(dataset.size()));
 
-        adapter = new SalseRecyclerViewAdapter(getActivity(),dataset);
+        adapter = new SalseRecyclerViewAdapter(getActivity() ,dataset);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 

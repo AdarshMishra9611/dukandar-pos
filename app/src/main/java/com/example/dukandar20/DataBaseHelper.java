@@ -205,6 +205,14 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+
+//add customer table
+
+//getcustomer
+
+
+
+
 //Insert into  Category
     public void addCategory(String categoryName, byte[] cat_image){
         SQLiteDatabase db = this.getReadableDatabase();
@@ -565,7 +573,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 // get bill item by bill id
-public Cursor getBillItemsByBillId(long billId) {
+public Cursor getBillItemsByBillId(String billId) {
     SQLiteDatabase db = this.getReadableDatabase();
     String query = "SELECT * FROM " + BILL_ITEM_TABLE_NAME + " WHERE " + BILL_ITEM_BILL_ID + " = ?";
     return db.rawQuery(query, new String[]{String.valueOf(billId)});

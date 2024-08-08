@@ -10,9 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="Item Name"/>
-
-
+        android:text="Item Name" />
 
     <TextView
         android:id="@+id/textViewItemRate"
@@ -20,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Rate"
-        android:gravity="end"/>
+        android:gravity="end" />
 
     <TextView
         android:id="@+id/textViewItemQty"
@@ -28,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Qty"
-        android:gravity="center"/>
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/textViewItemPrice"
@@ -36,5 +34,5 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Price"
-        android:gravity="end"/>
+        android:gravity="end" />
 </LinearLayout>

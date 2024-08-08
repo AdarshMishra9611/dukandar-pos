@@ -105,6 +105,9 @@ public class add_Activity extends AppCompatActivity {
         } else if ("instantAdd".equals(value)) {
             replace_cart_fragment(new Fragment_instantAdd());
 
+        } else if ("addCustomer".equals(value)) {
+//            replace_cart_fragment(new FragmentAddCustomer());
+
         }
 
 

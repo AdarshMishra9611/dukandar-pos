@@ -1,6 +1,7 @@
 package com.example.dukandar20.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.dukandar20.ActivityBillPreview;
 import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.Printer.BluetoothPrinter;
 import com.example.dukandar20.R;
@@ -33,7 +35,10 @@ public class Fragment_checkOut extends Fragment {
     private DataBaseHelper myDB;
     private RecyclerView recyclerView;
     private EditText cuustomerName,phoneNumber;
-    Button printButton;
+    private long billID;
+    Button printButton,buttonPreview;
+
+
 
     public Fragment_checkOut( double totalAmount,  ArrayList<cart_model> dataset) {
 
@@ -57,6 +62,7 @@ public class Fragment_checkOut extends Fragment {
          cuustomerName = view.findViewById(R.id.editTextCustomerName);
          phoneNumber = view.findViewById(R.id.editTextPhoneNumber);
          printButton = view.findViewById(R.id.buttobPrint);
+         buttonPreview = view.findViewById(R.id.buttonPreview);
 
 
          printButton.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +71,18 @@ public class Fragment_checkOut extends Fragment {
                  saveBill();
              }
          });
+         buttonPreview.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 saveBill();
+                 Intent intent = new Intent(getContext(), ActivityBillPreview.class);
+                 intent.putExtra("BILL_ID",String.valueOf(billID));
+                 getContext().startActivity(intent);
+             }
+         });
+
+
+
 
 
 
@@ -98,7 +116,7 @@ public class Fragment_checkOut extends Fragment {
         String paymentMethod = null;
 
 
-        long billID = myDB.insertBill(customerId,billDate,total,status,paymentMethod);
+        billID = myDB.insertBill(customerId,billDate,total,status,paymentMethod);
 
         myDB.insertBillItems(billID,dataset);
         BluetoothPrinter printer= new BluetoothPrinter(getContext(),getActivity());

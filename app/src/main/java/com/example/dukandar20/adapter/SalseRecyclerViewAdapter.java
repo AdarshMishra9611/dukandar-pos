@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,13 +58,15 @@ public class SalseRecyclerViewAdapter extends RecyclerView.Adapter<SalseRecycler
         String date = item.billDate;
 
 
-        holder.billNumber.setText("AM-"+String.valueOf(item.billNumber));
+        holder.billNumber.setText("AM-"+ item.billNumber);
         holder.billDate.setText(date);
         holder.totalbillAmount.setText(String.valueOf("₹"+item.totalbillAmount));
 
         holder.cardlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Log.v("BILL_ID",item.billNumber);
                 Intent intent = new Intent(context, ActivityBillPreview.class);
                 intent.putExtra("BILL_ID",item.billNumber);
                 context.startActivity(intent);
