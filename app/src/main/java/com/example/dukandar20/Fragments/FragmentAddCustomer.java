@@ -1,5 +1,6 @@
 package com.example.dukandar20.Fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,13 +11,21 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.R;
+
+import org.w3c.dom.Text;
 
 public class FragmentAddCustomer extends Fragment {
 
 
     private Toolbar toolbar;
+    private EditText phoneNumber,customerName;
+    private Button addfromContact;
 
     public FragmentAddCustomer() {
         // Required empty public constructor
@@ -40,22 +49,28 @@ public class FragmentAddCustomer extends Fragment {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_customer, container, false);
+        customerName = view.findViewById(R.id.editTextNewCustomerName);
+        phoneNumber = view.findViewById(R.id.editTextNewPhoneNumber);
+        addfromContact = view.findViewById(R.id.buttonAddFromContacts);
 
-//        toolbar =view.findViewById(R.id.toolbar_customer);
+        addfromContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DataBaseHelper myDB = new DataBaseHelper(getContext());
+                myDB.insertCustomer(
+                        customerName.getText().toString().trim(),
+                        phoneNumber.getText().toString().trim()
+                );
+            }
+        });
 
 
-//        if (getActivity() != null) {
-//            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-//            if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-//                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-//                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//                ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
-//            }
-//        }
+
 
 
 
@@ -76,4 +91,6 @@ public class FragmentAddCustomer extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

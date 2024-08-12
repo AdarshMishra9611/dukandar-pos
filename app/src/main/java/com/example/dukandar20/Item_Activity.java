@@ -42,7 +42,7 @@ public class Item_Activity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar_item);
 //        textView = findViewById(R.id.item_title);
         drawerLayout = findViewById(R.id.item_drawarerLayout);
-        cart_icon = findViewById(R.id.cart_icon);
+//        cart_icon = findViewById(R.id.cart_icon);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);

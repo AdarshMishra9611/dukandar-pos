@@ -6,32 +6,63 @@
     android:layout_height="match_parent"
     tools:context=".ActivityCustomer"
     android:orientation="vertical">
-    <include layout="@layout/toolbar_add_customer"/>
 
-   <FrameLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:layout_marginTop="10dp"
-       android:id="@+id/customerActivityFramelayout">
-       <androidx.viewpager2.widget.ViewPager2
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:id="@+id/viewPagerCustomer">
+    <include
 
-       </androidx.viewpager2.widget.ViewPager2>
+        layout="@layout/toolbar_add_customer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp" />
 
-   </FrameLayout>
+    <FrameLayout
+        android:id="@+id/customerActivityFramelayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar_customer_title"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="0dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/floatingActionButtonAddCustomer"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_marginEnd="36dp"-->
-<!--        android:layout_marginBottom="40dp"-->
-<!--        android:backgroundTint="@color/emeraldGreen"-->
-<!--        android:clickable="true"-->
-<!--        app:srcCompat="@drawable/customer_ic" />-->
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/customerTab"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp" />
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPagerCustomer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/customerTab"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                >
+
+            </androidx.viewpager.widget.ViewPager>
+
+        </RelativeLayout>
+
+
+
+    </FrameLayout>
+
 
 </RelativeLayout>

@@ -13,4 +13,14 @@
         <item name="cornerSize">9dp</item>
 
     </style>
+    <!-- In res/values/styles.xml -->
+    <style name="CustomSearchViewStyle">
+        <item name="android:queryHint">"Search"</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:editTextColor">@color/emeraldGreen</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:searchIcon">@drawable/search24green</item>
+                                                                       <item name="android:closeIcon">@drawable/search24green</item>
+    </style>
+
 </resources>

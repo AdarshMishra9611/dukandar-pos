@@ -43,7 +43,7 @@ public class SalseRecyclerViewAdapter extends RecyclerView.Adapter<SalseRecycler
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.salse_card,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_sales,parent,false);
 
 
         return new ViewHolder(view);

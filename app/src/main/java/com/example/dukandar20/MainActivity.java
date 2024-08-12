@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,7 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dukandar20.Fragments.FragmentCart;
-import com.example.dukandar20.adapter.ViewPagerAdapter;
+import com.example.dukandar20.adapter.MainViewPagerAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.navigation.NavigationView;
@@ -34,7 +35,8 @@ public class MainActivity extends AppCompatActivity implements FragmentCart.OnNe
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     TextView toolbar_title;
-    ImageView cart_icon;
+    ImageView search_icon;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +51,9 @@ public class MainActivity extends AppCompatActivity implements FragmentCart.OnNe
         bottom_Nav = findViewById(R.id.bottom_Nav);
         drawerLayout = findViewById(R.id.category_drawerLayout);
         navigationView = findViewById(R.id.navigationView);
-        cart_icon = findViewById(R.id.cart_icon);
+        search_icon = findViewById(R.id.search_icon);
         toolbar_title = findViewById(R.id.toolbar_title);
+        searchView = findViewById(R.id.duesearchView);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements FragmentCart.OnNe
         toggle.getDrawerArrowDrawable().setColor(ContextCompat.getColor(this, R.color.emeraldGreen));
 
         //adapter
-        ViewPagerAdapter adapter = new ViewPagerAdapter(this);
+        MainViewPagerAdapter adapter = new MainViewPagerAdapter(this);
         mainPage.setAdapter(adapter);
 
        mainPage.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
@@ -70,22 +73,34 @@ public class MainActivity extends AppCompatActivity implements FragmentCart.OnNe
            public void onPageSelected(int position) {
                super.onPageSelected(position);
                switch (position){
-                   case 0: toolbar_title.setText("SALSE");
+                   case 0: toolbar_title.setVisibility(View.VISIBLE);
+                           toolbar_title.setText("SALES");
                            bottom_Nav.setSelectedItemId(R.id.itSale);
+                           searchView.setVisibility(View.GONE);
                           break;
-                   case 1: toolbar_title.setText("BALANCE");
+                   case 1: toolbar_title.setVisibility(View.VISIBLE);
+                           toolbar_title.setText("BALANCE");
+                           search_icon.setVisibility(View.VISIBLE);
                            bottom_Nav.setSelectedItemId(R.id.itBlance);
+                           searchView.setVisibility(View.GONE);
                        break;
 
-                   case 2: toolbar_title.setText("DUKANDAR");
-                            bottom_Nav.setSelectedItemId(R.id.itPOV);
+                   case 2: toolbar_title.setVisibility(View.VISIBLE);
+                           toolbar_title.setText("DUKANDAR");
+                           bottom_Nav.setSelectedItemId(R.id.itPOV);
+                           searchView.setVisibility(View.GONE);
+
                        break;
-                   case 3: toolbar_title.setText("CATEGORY");
+                   case 3: toolbar_title.setVisibility(View.VISIBLE);
+                           toolbar_title.setText("CATEGORY");
                            bottom_Nav.setSelectedItemId(R.id.itCategory);
+                           searchView.setVisibility(View.GONE);
                        break;
 
-                   case 4: toolbar_title.setText("DUKANDAR");
+                   case 4: toolbar_title.setVisibility(View.VISIBLE);
+                           toolbar_title.setText("DUKANDAR");
                            bottom_Nav.setSelectedItemId(R.id.itMore);
+                           searchView.setVisibility(View.GONE);
                        break;
 
 
@@ -126,13 +141,13 @@ public class MainActivity extends AppCompatActivity implements FragmentCart.OnNe
         });
         bottom_Nav.setSelectedItemId(R.id.itPOV);
 
-        cart_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, add_Activity.class);
-                startActivity(intent);
-            }
-        });
+//        cart_icon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, add_Activity.class);
+//                startActivity(intent);
+//            }
+//        });
     }
     @Override
     public void onBackPressed() {

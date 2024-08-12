@@ -4,19 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.FragmentCustomer">
+    tools:context=".Fragments.FragmentDueCustomer">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/reyclerViewCustomer"
+            android:id="@+id/reyclerViewDCustomer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/grayBackground"/>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButtonAddCustomer"
+            android:id="@+id/floatingActionButtonAddDCustomer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -25,9 +25,9 @@
             android:layout_marginBottom="40dp"
             android:backgroundTint="@color/emeraldGreen"
             android:clickable="true"
-            app:srcCompat="@drawable/customer_ic" />
+            app:srcCompat="@drawable/customer_ic"
+            android:visibility="gone"/>
 
     </RelativeLayout>
-
 
 </FrameLayout>

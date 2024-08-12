@@ -6,17 +6,18 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.dukandar20.Fragments.FragmentBalance;
+import com.example.dukandar20.Fragments.FragmentDueCustomer;
 import com.example.dukandar20.Fragments.FragmentMore;
 import com.example.dukandar20.Fragments.FragmentSales;
 import com.example.dukandar20.Fragments.FragmentCart;
 import com.example.dukandar20.Fragments.FragmentCategory;
 
-public class ViewPagerAdapter extends FragmentStateAdapter {
+public class MainViewPagerAdapter extends FragmentStateAdapter {
 
 
 
 
-    public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity ) {
+    public MainViewPagerAdapter(@NonNull FragmentActivity fragmentActivity ) {
         super(fragmentActivity);
 
     }
@@ -29,7 +30,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
             case 0:
                 return new FragmentSales();
             case 1:
-                return new FragmentBalance();
+                return new FragmentDueCustomer();
             case 2:
                 return new FragmentCart();
             case 3:

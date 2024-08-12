@@ -13,8 +13,10 @@ import androidx.annotation.Nullable;
 
 import com.example.dukandar20.models.BillItem;
 import com.example.dukandar20.models.cart_model;
+import com.example.dukandar20.models.due_customer_model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
 
@@ -206,7 +208,70 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
 
-//add customer table
+
+// Insert a new customer
+public void insertCustomer(String name, String phone) {
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues contentValues = new ContentValues();
+    contentValues.put(CUSTOMER_NAME, name);
+    contentValues.put(CUSTOMER_PHONE, phone);
+    long result = db.insert(CUSTOMERS_TABLE_NAME, null, contentValues);
+
+    if (result == -1){
+        Toast.makeText(context,"Failed",Toast.LENGTH_SHORT).show();
+
+    }else {
+        Toast.makeText(context,"Customer Added successfully",Toast.LENGTH_SHORT).show();
+    }
+    db.close();
+}
+// Update an existing customer
+    public void updateCustomer(int customerId, String name, String phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CUSTOMER_NAME, name);
+        contentValues.put(CUSTOMER_PHONE, phone);
+        int result = db.update(CUSTOMERS_TABLE_NAME, contentValues, CUSTOMER_ID + " = ?", new String[]{String.valueOf(customerId)});
+        db.close();
+
+    }
+    // Delete a customer
+    public void deleteCustomer(int customerId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int result = db.delete(CUSTOMERS_TABLE_NAME, CUSTOMER_ID + " = ?", new String[]{String.valueOf(customerId)});
+        db.close();
+
+     }
+    // Get a single customer by ID
+    public Cursor getCustomer(int customerId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(
+                CUSTOMERS_TABLE_NAME,
+                null, // Select all columns
+                CUSTOMER_ID + " = ?",
+                new String[]{String.valueOf(customerId)},
+                null, // Group by
+                null, // Having
+                null  // Order by
+        );
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor; // The caller is responsible for closing the cursor
+    }
+    // Get all customers
+    public Cursor getAllCustomers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.query(
+                CUSTOMERS_TABLE_NAME,
+                null, // Select all columns
+                null, // No where clause
+                null, // No where arguments
+                null, // Group by
+                null, // Having
+                CUSTOMER_NAME + " ASC"  // Order by customer name in ascending order
+        );
+    }
 
 //getcustomer
 
@@ -573,11 +638,67 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
 
 // get bill item by bill id
-public Cursor getBillItemsByBillId(String billId) {
-    SQLiteDatabase db = this.getReadableDatabase();
-    String query = "SELECT * FROM " + BILL_ITEM_TABLE_NAME + " WHERE " + BILL_ITEM_BILL_ID + " = ?";
-    return db.rawQuery(query, new String[]{String.valueOf(billId)});
-}
+    public Cursor getBillItemsByBillId(String billId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + BILL_ITEM_TABLE_NAME + " WHERE " + BILL_ITEM_BILL_ID + " = ?";
+        return db.rawQuery(query, new String[]{String.valueOf(billId)});
+    }
+
+
+// get balance by id
+    public double getCustomerBalanceById(int customerId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        double balance = 0.0;
+
+        String query = "SELECT " + BALANCE_AMOUNT + " FROM " + CUSTOMER_BALANCE_TABLE_NAME +
+                " WHERE " + BALANCE_CUSTOMER_ID + " = ?";
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(customerId)});
+
+        if (cursor.moveToFirst()) {
+            balance = cursor.getDouble(cursor.getColumnIndexOrThrow(BALANCE_AMOUNT));
+        }
+
+        cursor.close();
+        db.close();
+
+        return balance;
+    }
+
+    public List<due_customer_model> getCustomersWithBalance() {
+        List<due_customer_model> customersWithBalance = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to get all customers with a balance greater than 0
+        String query = "SELECT c." + CUSTOMER_ID + ", c." + CUSTOMER_NAME + ", c." + CUSTOMER_PHONE +
+                ", b." + BALANCE_AMOUNT +
+                " FROM " + CUSTOMERS_TABLE_NAME + " c" +
+                " JOIN " + CUSTOMER_BALANCE_TABLE_NAME + " b" +
+                " ON c." + CUSTOMER_ID + " = b." + BALANCE_CUSTOMER_ID +
+                " WHERE b." + BALANCE_AMOUNT + " > 0";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int customerId = cursor.getInt(0);
+                String customerName = cursor.getString(1);
+                String customerPhone = cursor.getString(2);
+                double balance = cursor.getDouble(3);
+
+                // Create a DueCustomerModel object and add it to the list
+                due_customer_model customer = new due_customer_model(customerId, customerName, customerPhone, balance);
+                customersWithBalance.add(customer);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return customersWithBalance;
+    }
+
+
 
 
 

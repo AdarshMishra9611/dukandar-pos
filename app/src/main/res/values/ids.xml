@@ -4,4 +4,10 @@
     <item name="editTextNewPhoneNumber" type="id" />
     <item name="editTextNewCountryCode" type="id" />
     <item name="buttonAddFromContacts" type="id" />
+    <item name="customerActivityFramelayout" type="id" />
+    <item name="viewPagerCustomer" type="id" />
+    <item name="textViewBalanceAmount" type="id" />
+
+
+
 </resources>

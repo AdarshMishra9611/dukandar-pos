@@ -13,4 +13,5 @@
     <color name="rowColor">#63C268</color>
     <color name="backgroundColor">#EDEEE9E9</color>
     <color name="grayBackground">#FAD7D7D7</color>
+    <color name="red">#DE4B41</color>
 </resources>
