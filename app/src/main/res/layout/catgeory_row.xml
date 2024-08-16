@@ -36,8 +36,8 @@
                 android:layout_marginLeft="@dimen/dim_7"
                 android:layout_marginTop="@dimen/dim_9"
                 android:layout_marginBottom="@dimen/dim_2"
-                android:background="@color/black"
-                android:src="@drawable/cart"
+                android:background="@color/smokeyWhite"
+                android:src="@drawable/categories"
                 app:shapeAppearanceOverlay="@style/roundedImageView" />
 
             <TextView

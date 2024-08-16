@@ -33,6 +33,7 @@ public class FragmentSales extends Fragment {
 
     RecyclerView recyclerView;
     ArrayList<salse_item_model> dataset;
+    TextView noSales;
 
     SalseRecyclerViewAdapter adapter;
     DataBaseHelper myDB;
@@ -61,19 +62,36 @@ public class FragmentSales extends Fragment {
     public void onResume() {
         super.onResume();
         populateDataSet();
+        if (dataset.size()==0){
+            noSales.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }else {
+            recyclerView.setVisibility(View.VISIBLE);
+            noSales.setVisibility(View.GONE);
+        }
         adapter.notifyDataSetChanged();
     }
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view   = inflater.inflate(R.layout.fragment__sales, container, false);
         recyclerView = view.findViewById(R.id.recyclerViewSalse);
+        noSales = view.findViewById(R.id.noSaleTextView);
 
         dataset = new ArrayList<>();
         myDB = new DataBaseHelper(getContext());
         populateDataSet();
+
+        if (dataset.size()==0){
+            noSales.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }else {
+            recyclerView.setVisibility(View.VISIBLE);
+            noSales.setVisibility(View.GONE);
+        }
 
 
 

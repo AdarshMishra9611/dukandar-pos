@@ -78,7 +78,8 @@ public class MainActivity extends AppCompatActivity implements FragmentCart.OnNe
                            bottom_Nav.setSelectedItemId(R.id.itSale);
                            searchView.setVisibility(View.GONE);
                           break;
-                   case 1: toolbar_title.setVisibility(View.VISIBLE);
+                   case 1:
+                           toolbar_title.setVisibility(View.VISIBLE);
                            toolbar_title.setText("BALANCE");
                            search_icon.setVisibility(View.VISIBLE);
                            bottom_Nav.setSelectedItemId(R.id.itBlance);

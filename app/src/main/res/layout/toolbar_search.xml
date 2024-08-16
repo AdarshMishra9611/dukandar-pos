@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/toolbar_customer"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/white"
+    android:elevation="6dp"
+    >
+
+
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/customersearchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/CustomSearchViewStyle"
+            android:background="@color/smokeyWhite"
+            tools:ignore="MissingConstraints"
+            android:visibility="gone"/>
+
+
+
+</androidx.appcompat.widget.Toolbar>

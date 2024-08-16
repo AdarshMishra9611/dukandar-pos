@@ -7,7 +7,10 @@
     <item name="customerActivityFramelayout" type="id" />
     <item name="viewPagerCustomer" type="id" />
     <item name="textViewBalanceAmount" type="id" />
-
+    <item name="buttonAddItem" type="id" />
+    <item name="buttonUpdateItem" type="id" />
+    <item name="buttonAddCategory" type="id" />
+    <item name="buttonUpdateCategory" type="id" />
 
 
 </resources>

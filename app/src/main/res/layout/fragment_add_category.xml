@@ -5,47 +5,81 @@
     android:id="@+id/add_category_frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightGreen"
+    android:background="@color/grayBackground"
     tools:context=".Fragments.add_category">
 
-    <!-- EditText for category input -->
-
-    <!-- Button to add category -->
-    <ImageView
-        android:id="@+id/categoryImage"
-        android:layout_width="211dp"
-        android:layout_height="195dp"
-        android:background="@drawable/image_border"
-        android:clickable="true"
-        android:src="@android:drawable/ic_menu_camera"
-        app:layout_constraintBottom_toTopOf="@+id/editTextCategory"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/editTextCategory"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dim_32"
-
-        android:layout_marginEnd="@dimen/dim_32"
-        android:background="@drawable/edit_text_background"
-        android:elevation="4dp"
-        android:hint="@string/enter_category_name"
-        android:padding="16dp"
+        android:layout_height="250dp"
+        android:layout_margin="8dp"
+        android:layout_marginTop="15dp"
+        app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.039">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <ImageView
+                android:id="@+id/categoryImage"
+                android:layout_width="127dp"
+                android:layout_height="117dp"
+                android:layout_marginTop="16dp"
+
+
+                android:background="@drawable/image_border"
+
+                android:clickable="true"
+                android:padding="15dp"
+                android:src="@drawable/baseline_add_a_photo_24"
+
+
+                app:layout_constraintBottom_toTopOf="@+id/editTextCategory"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+
+            <EditText
+                android:id="@+id/editTextCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dim_32"
+
+                android:layout_marginEnd="@dimen/dim_32"
+                android:background="@drawable/edit_text_background"
+                android:elevation="4dp"
+                android:hint="@string/enter_category_name"
+                android:padding="16dp"
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.86" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+    <!--  -->
+
 
     <Button
         android:id="@+id/buttonAddCategory"
-        android:layout_width="@dimen/dim_150"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dim_65"
-        android:layout_marginTop="@dimen/dim_96"
         android:background="@drawable/button_background"
         android:elevation="4dp"
         android:paddingStart="24dp"
@@ -57,17 +91,13 @@
         android:textSize="@dimen/dim_30"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/editTextCategory"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@id/editTextCategory"
-        app:layout_constraintTop_toBottomOf="@id/editTextCategory"
-        app:layout_constraintVertical_bias="0.065" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonUpdateCategory"
-        android:layout_width="186dp"
-        android:layout_height="73dp"
-        android:layout_marginTop="96dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/button_background"
         android:elevation="4dp"
         android:paddingStart="24dp"
@@ -79,12 +109,8 @@
         android:textSize="@dimen/dim_30"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/editTextCategory"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="@id/editTextCategory"
-        app:layout_constraintTop_toBottomOf="@id/editTextCategory"
-        app:layout_constraintVertical_bias="0.067"
-        />
+        app:layout_constraintEnd_toEndOf="@+id/buttonAddCategory"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.dukandar20.models.BillItem;
 import com.example.dukandar20.models.cart_model;
 import com.example.dukandar20.models.due_customer_model;
 
@@ -23,7 +22,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     private Context context;
     // Database variables
     public static final String DATABASE_NAME = "database.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     // Constants for the database table and column names
 
@@ -72,7 +71,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String BILL_ITEM_TABLE_NAME = "BillItem";
     public static final String BILL_ITEM_ID = "BillItemID";
     public static final String BILL_ITEM_BILL_ID = "BillID";
-    public static final String BILL_ITEM_ITM_ID = "ItemName";
+    public static final String BILL_ITEM_ITM_NAM = "ItemName";
     public static final String BILL_ITEM_QUANTITY = "Quantity";
 
     public static final String BILL_ITEM_PRICE = "Price";
@@ -119,10 +118,10 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String createItemTableQuery = "CREATE TABLE " + ITM_TABLE_NAME + " (" +
                 ITM_ID + " INTEGER PRIMARY KEY, " +
                 ITM_NAME + " TEXT, " +
-                ITM_PRC + " REAL, " +
+                ITM_PRC + " DOUBLE ," +
                 C_ID + " INTEGER, " +
                 ITM_IMG + " BLOB, " +
-                "FOREIGN KEY(" + C_ID + ") REFERENCES " + CAT_TABLE_NAME + "(" + CAT_ID + ")" +
+                "FOREIGN KEY(" + C_ID + ") REFERENCES " + CAT_TABLE_NAME + "(" + CAT_ID + ") ON DELETE CASCADE" +
                 ");";
 
         // queary to create CartTable
@@ -136,7 +135,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 // Queary to create Bill Table
         String createBillTableQuery = "CREATE TABLE " + BILL_TABLE_NAME + " (" +
                 BILL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                BILL_CUSTOMER_ID + " INTEGER, " +
+                BILL_CUSTOMER_ID + " INTEGER , " +
                 BILL_DATE + " TEXT, " +
                 BILL_TOTAL_AMOUNT + " REAL, " +
                 BILL_STATUS + " TEXT, " +
@@ -148,13 +147,11 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String createBillItemTableQuery = "CREATE TABLE " + BILL_ITEM_TABLE_NAME + " (" +
                 BILL_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 BILL_ITEM_BILL_ID + " INTEGER, " +
-                BILL_ITEM_ITM_ID + " TEXT, " +
+                BILL_ITEM_ITM_NAM + " TEXT, " +
                 BILL_ITEM_QUANTITY + " INTEGER, " +
 
                 BILL_ITEM_PRICE + " REAL, " +
-                "FOREIGN KEY(" + BILL_ITEM_BILL_ID + ") REFERENCES " + BILL_TABLE_NAME + "(" + BILL_ID + "), " +
-                "FOREIGN KEY(" + BILL_ITEM_ITM_ID + ") REFERENCES " + ITM_TABLE_NAME + "(" + ITM_ID + ")" +
-                ");";
+                "FOREIGN KEY(" + BILL_ITEM_BILL_ID + ") REFERENCES " + BILL_TABLE_NAME + "(" + BILL_ID + ") " + ");";
 
         // Query to create CustomerBalance table
         String createCustomerBalanceTableQuery = "CREATE TABLE " + CUSTOMER_BALANCE_TABLE_NAME + " (" +
@@ -177,6 +174,9 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 ");";
 
         // Execute the queries to create the tables
+        db.execSQL("PRAGMA foreign_keys = ON;");
+        db.setForeignKeyConstraintsEnabled(true);
+
         db.execSQL(createCategoryTableQuery);
         db.execSQL(createItemTableQuery);
         db.execSQL(createCartTableQuery);
@@ -192,8 +192,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop old tables if they exist
+
+
         db.execSQL("DROP TABLE IF EXISTS " + CAT_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + ITM_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + CART_TABLE_NAME);
@@ -225,7 +233,46 @@ public void insertCustomer(String name, String phone) {
     }
     db.close();
 }
-// Update an existing customer
+    public long getOrAddCustomerByPhone(String name, String phone) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to check if customer already exists by phone number
+        String query = "SELECT " + CUSTOMER_ID + " FROM " + CUSTOMERS_TABLE_NAME +
+                " WHERE " + CUSTOMER_PHONE + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{phone});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            // Get the index of the CUSTOMER_ID column
+            int columnIndex = cursor.getColumnIndex(CUSTOMER_ID);
+            if (columnIndex != -1) {
+                long customerId = cursor.getLong(columnIndex);
+                cursor.close();
+                db.close();
+                return customerId;
+            }
+        }
+
+        cursor.close();
+
+        // Customer does not exist, insert new customer
+        db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CUSTOMER_NAME, name);
+        contentValues.put(CUSTOMER_PHONE, phone);
+        long newCustomerId = db.insert(CUSTOMERS_TABLE_NAME, null, contentValues);
+
+        db.close();
+
+        if (newCustomerId == -1) {
+            Toast.makeText(context, "Failed to add customer", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Customer added successfully", Toast.LENGTH_SHORT).show();
+        }
+
+        return newCustomerId;
+    }
+
+    // Update an existing customer
     public void updateCustomer(int customerId, String name, String phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -318,6 +365,7 @@ public void insertCustomer(String name, String phone) {
         } else {
             Toast.makeText(context, "Category deleted successfully", Toast.LENGTH_SHORT).show();
         }
+        db.close();
     }
 
 
@@ -500,6 +548,7 @@ public void insertCustomer(String name, String phone) {
         }else {
             Toast.makeText(context,"Item Deleted successfully",Toast.LENGTH_SHORT).show();
         }
+        db.close();
   }
 
 
@@ -575,11 +624,15 @@ public void insertCustomer(String name, String phone) {
 
 // Insert into bills
 
-    public long insertBill(int customerId, String billDate, double totalAmount, String status, String paymentMethod) {
+    public long insertBill(Integer customerId, String billDate, double totalAmount, String status, String paymentMethod) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        cv.put(BILL_CUSTOMER_ID, customerId);
+        if (customerId != null) {
+            cv.put(BILL_CUSTOMER_ID, customerId);
+        }
+
+
         cv.put(BILL_DATE, billDate);
         cv.put(BILL_TOTAL_AMOUNT, totalAmount);
         cv.put(BILL_STATUS, status);
@@ -623,7 +676,7 @@ public void insertCustomer(String name, String phone) {
         for (cart_model item : billItems) {
             cv = new ContentValues();
             cv.put(BILL_ITEM_BILL_ID, billId);
-            cv.put(BILL_ITEM_ITM_ID, item.productName);
+            cv.put(BILL_ITEM_ITM_NAM, item.productName);
             cv.put(BILL_ITEM_QUANTITY, item.productQuantity);
 
             cv.put(BILL_ITEM_PRICE, item.productPrice);

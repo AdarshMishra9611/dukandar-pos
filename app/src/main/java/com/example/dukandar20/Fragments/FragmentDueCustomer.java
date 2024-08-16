@@ -1,5 +1,6 @@
 package com.example.dukandar20.Fragments;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dukandar20.ActivityCustomer;
+import com.example.dukandar20.ActivitySearch;
 import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.R;
 import com.example.dukandar20.adapter.CustomerRecyclerViewAdapter;
@@ -82,29 +84,28 @@ public class FragmentDueCustomer extends Fragment {
             }
         });
 
-        search_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchView.setVisibility(View.VISIBLE);
-                toolbar_title.setVisibility(View.GONE);
-                search_icon.setVisibility(View.GONE);
+//        search_icon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(getContext(), ActivitySearch.class);
+//                intent.putExtra("DatasetType",dataSet);
+//
+//            }
+//        });
 
-            }
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                filterCustomer(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                filterCustomer(newText);
-                return true ;
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                filterCustomer(query);
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                filterCustomer(newText);
+//                return true ;
+//            }
+//        });
 
         myDB = new DataBaseHelper(getContext());
         dataSet = new ArrayList<>();

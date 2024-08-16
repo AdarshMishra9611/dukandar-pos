@@ -55,13 +55,13 @@ public class Item_Activity extends AppCompatActivity {
         toggle.getDrawerArrowDrawable().setColor(ContextCompat.getColor(this, R.color.emeraldGreen));
 
         //cart button pressed
-        cart_icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Item_Activity.this, add_Activity.class);
-                startActivity(intent);
-            }
-        });
+//        cart_icon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Item_Activity.this, add_Activity.class);
+//                startActivity(intent);
+//            }
+//        });
 
 
 

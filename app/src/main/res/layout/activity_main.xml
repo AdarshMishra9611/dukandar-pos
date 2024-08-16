@@ -38,7 +38,9 @@
             app:menu="@menu/bottom_menu"
             app:itemIconTint="@color/emeraldGreen"
             app:itemTextColor="@color/emeraldGreen"
+
             android:elevation="5dp"
+
 
             />
 

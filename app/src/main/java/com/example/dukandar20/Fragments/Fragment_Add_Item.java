@@ -158,7 +158,7 @@ public class Fragment_Add_Item extends Fragment {
             @Override
             public void onClick(View view) {
                 ImagePicker.with(Fragment_Add_Item.this)
-                        .crop()
+                        .crop(95f,75f)
                         .compress(1024)
                         .maxResultSize(1080,1080)
                         .start(IMG_REQ_CODE);
@@ -187,11 +187,19 @@ public class Fragment_Add_Item extends Fragment {
         }
     }
 
-    private  byte[] convertToByteArray(ImageView imageView){
-        Bitmap bitmap = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,70,byteArrayOutputStream);
+    private byte[] convertToByteArray(ImageView imageView) {
+        Bitmap bitmap;
 
+        if (imageView.getDrawable() instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        } else {
+            // Load a default bitmap from your resources as a fallback
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.gallery); // Replace with your default image
+        }
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 70, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
+
 }

@@ -158,8 +158,9 @@ public class Item_RecyclerViewAdapter extends RecyclerView.Adapter<Item_Recycler
         // Card click listener to add item to cart
         holder.cardlayout.setOnClickListener(view -> {
             if(item.productQuantity == 0){
-                holder.productQuantity.setText(String.valueOf(item.productQuantity+1));
+
             }
+            holder.productQuantity.setText(String.valueOf(item.productQuantity+1));
 
             // to insert
             insert( new cart_model(item.item_name, item.item_price, item.productQuantity));

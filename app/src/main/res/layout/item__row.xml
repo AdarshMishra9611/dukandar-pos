@@ -30,7 +30,8 @@
                 android:layout_marginLeft="@dimen/dim_9"
                 android:layout_marginTop="@dimen/dim_9"
                 android:layout_marginBottom="@dimen/dim_2"
-                android:background="@color/black"
+                android:background="@color/smokeyWhite"
+                android:src="@drawable/items"
                 app:shapeAppearanceOverlay="@style/roundedImageView" />
 
             <LinearLayout

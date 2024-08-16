@@ -153,7 +153,7 @@ public class add_category extends Fragment {
             @Override
             public void onClick(View view) {
                 ImagePicker.with(add_category.this)
-                        .crop()	    			//Crop image(Optional), Check Customization for more option
+                        .crop(100f,95f)	    			//Crop image(Optional), Check Customization for more option
                         .compress(1024)			//Final image size will be less than 1 MB(Optional)
                         .maxResultSize(1080, 1080)	//Final image resolution will be less than 1080 x 1080(Optional)
                         .start(IMG_REQ_CODE);
@@ -182,11 +182,19 @@ public class add_category extends Fragment {
 
 
     //convert imageview into bit map
-    private byte[] convertToByteArray(ImageView imageView){
-        Bitmap bitmap =((BitmapDrawable) imageView.getDrawable()).getBitmap();
+    private byte[] convertToByteArray(ImageView imageView) {
+        Bitmap bitmap;
+
+        if (imageView.getDrawable() instanceof BitmapDrawable) {
+            bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        } else {
+            // Load a default bitmap from your resources as a fallback
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.categories); // Replace with your default image
+        }
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,70,byteArrayOutputStream);
-        return  byteArrayOutputStream.toByteArray();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 70, byteArrayOutputStream);
+        return byteArrayOutputStream.toByteArray();
     }
 
 }
