@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/opthome"
-        android:title="Notes"/>
+  <item
+      android:id="@+id/optManagement"
+      android:title="Management"
+      >
+      <menu>
+          <item
+              android:id="@+id/optReceipts"
+              android:title="Receipts"/>
+          <item
+              android:id="@+id/optCustomer"
+              android:title="Customer"/>
+          <item
+              android:id="@+id/optInventory"
+              android:title="Inventory"/>
+
+      </menu>
+  </item>
 
 
-
-    <item
-        android:id="@+id/optItem"
-        android:title="Home"/>
-
-    <item
-        android:id="@+id/optSetting"
-        android:title="Setting"/>
-
+  <item
+      android:id="@+id/logOut"
+      android:title="Logout"/>
 
 
 </menu>
