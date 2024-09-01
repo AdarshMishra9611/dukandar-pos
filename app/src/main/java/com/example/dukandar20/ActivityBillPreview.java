@@ -37,7 +37,6 @@ public class ActivityBillPreview extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bill_priview);
-
         containerItems = findViewById(R.id.containerItems);
         textViewTotalAmount = findViewById(R.id.textViewTotalAmount);
         buttonBack = findViewById(R.id.buttonBack);
