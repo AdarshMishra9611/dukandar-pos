@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.dukandar20.ActivityBillPreview;
+import com.example.dukandar20.ActivityFinal;
 import com.example.dukandar20.DataBaseHelper;
 import com.example.dukandar20.Printer.BluetoothPrinter;
 import com.example.dukandar20.R;
@@ -107,7 +108,14 @@ public class Fragment_checkOut extends Fragment {
                      }
                  }
 
+                 Intent intent = new Intent(getContext(), ActivityFinal.class);
+                 getActivity().startActivity(intent);
+                 if (getActivity() != null) {
+                     getActivity().finish();
+                 }
+
                  saveBill(1);
+                 myDB.clearCart();
              }
 
 
@@ -172,10 +180,11 @@ public class Fragment_checkOut extends Fragment {
 
 
         myDB.insertBillItems(billID,dataset);
+
         BluetoothPrinter printer= new BluetoothPrinter(getContext(),getActivity());
         printer.doPrint(dataset);
 
-//        myDB.clearCart();
+
 
 
 

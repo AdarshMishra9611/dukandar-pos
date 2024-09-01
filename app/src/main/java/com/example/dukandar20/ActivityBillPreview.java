@@ -1,15 +1,20 @@
 package com.example.dukandar20;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.dukandar20.Printer.PDFGenerator;
 import com.example.dukandar20.models.ReceiptItem;
 
 import java.util.ArrayList;
@@ -21,8 +26,12 @@ public class ActivityBillPreview extends AppCompatActivity {
     private TextView textViewTotalAmount;
     List<ReceiptItem> dataset;
     String billId;
+    AppCompatImageButton buttonBack,buttonDownload,buttonShare;
+    Button buttonPrint;
 
     DataBaseHelper myDB;
+    private PDFGenerator pdfGenerator;
+    private static final int REQUEST_PERMISSION_WRITE_STORAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +40,18 @@ public class ActivityBillPreview extends AppCompatActivity {
 
         containerItems = findViewById(R.id.containerItems);
         textViewTotalAmount = findViewById(R.id.textViewTotalAmount);
+        buttonBack = findViewById(R.id.buttonBack);
+        buttonDownload = findViewById(R.id.buttonDownload);
+        buttonPrint = findViewById(R.id.buttonPrint);
+        buttonShare = findViewById(R.id.buttonShare);
+        pdfGenerator = new PDFGenerator(this);
+
+
+
+
+
+
+
         myDB = new DataBaseHelper(this);
         dataset = new ArrayList<>();
 
@@ -40,6 +61,11 @@ public class ActivityBillPreview extends AppCompatActivity {
 
         double total = calculateTotal(dataset);
         textViewTotalAmount.setText(String.format("₹%.2f", total));
+
+        buttonBack.setOnClickListener(v -> onBackPressed());
+        buttonDownload.setOnClickListener(v -> downloadReceipt());
+        buttonShare.setOnClickListener(v -> shareReceipt());
+        buttonPrint.setOnClickListener(v -> printReceipt());
     }
 
     private double calculateTotal(List<ReceiptItem> items) {
@@ -90,5 +116,38 @@ public class ActivityBillPreview extends AppCompatActivity {
         itemPriceView.setText(String.format("₹%.2f", price));
 
         containerItems.addView(itemView);
+    }
+    private void requestStoragePermission() {
+        if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_WRITE_STORAGE);
+        } else {
+            downloadReceipt();
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_PERMISSION_WRITE_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                downloadReceipt();
+            } else {
+                Toast.makeText(this, "Permission denied to write to storage", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void downloadReceipt() {
+        // Implement your download functionality here
+        double total = calculateTotal(dataset);
+        pdfGenerator.generatePDF(dataset, total);
+        Toast.makeText(this, "Download clicked", Toast.LENGTH_SHORT).show();
+    }
+    private void shareReceipt() {
+        // Implement your share functionality here
+        Toast.makeText(this, "Share clicked", Toast.LENGTH_SHORT).show();
+    }
+    private void printReceipt() {
+        // Implement your print functionality here
+        Toast.makeText(this, "Print clicked", Toast.LENGTH_SHORT).show();
     }
 }

@@ -11,6 +11,13 @@
     <item name="buttonUpdateItem" type="id" />
     <item name="buttonAddCategory" type="id" />
     <item name="buttonUpdateCategory" type="id" />
+    <item name="editTextCustomerName" type="id" />
+    <item name="editTextCountryCode" type="id" />
+    <item name="editTextPhoneNumber" type="id" />
+    <item name="radioGroupPayment" type="id" />
+    <item name="isCash" type="id" />
+    <item name="isUPI" type="id" />
+    <item name="isCredit" type="id" />
 
 
 </resources>

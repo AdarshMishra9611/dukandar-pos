@@ -72,6 +72,9 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="contacts">Contacts</string>
+    <string name="share" />
+    <string name="download" />
+    <string name="back" />
 
 
 </resources>

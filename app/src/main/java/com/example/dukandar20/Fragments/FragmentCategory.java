@@ -1,10 +1,14 @@
 package com.example.dukandar20.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +27,7 @@ import com.example.dukandar20.adapter.CategoryRecylerViewAdapter;
 import com.example.dukandar20.add_Activity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 
@@ -84,6 +89,19 @@ public class FragmentCategory extends Fragment {
         cat_image = new ArrayList<>();
         cat_id = new ArrayList<>();
 
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("AppCategory", Context.MODE_PRIVATE);
+        boolean isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true);
+        if (isFirstLaunch) {
+            // Insert default dataset
+            defultDataset();
+
+            // Update the flag to indicate that the default data has been inserted
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("isFirstLaunch", false);
+            editor.apply();
+        }
+
         categoryData();
 
         int spanCount = calculateNumberOfColumns();
@@ -138,6 +156,34 @@ public class FragmentCategory extends Fragment {
         int screenWidth = displayMetrics.widthPixels;
         int itemWidth = getResources().getDimensionPixelSize(R.dimen.grid_item_width); // Define your item width in dimens.xml
         return screenWidth / itemWidth;
+    }
+    private void defultDataset(){
+        DataBaseHelper mydb = new DataBaseHelper(getContext());
+        Drawable getImage;
+        Bitmap bitmap;
+        ByteArrayOutputStream stream;
+        byte [] imageByte;
+        String categoryNames[] = {"Perle-G","Britannia","Nestle","ITC","Beverages","Dariy Product"};
+
+        int  image[] ={R.drawable.categories,R.drawable.categories,R.drawable.categories,R.drawable.categories,R.drawable.categories,R.drawable.categories};
+
+        for(int i =0;i<categoryNames.length;i++){
+
+            getImage = getResources().getDrawable(image[i]);
+            bitmap = ((BitmapDrawable) getImage).getBitmap();
+
+            stream =new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG,70,stream);
+            imageByte = stream.toByteArray();
+
+            mydb.addCategory(categoryNames[i],imageByte);
+
+        }
+
+
+
+
+
     }
 
 }
